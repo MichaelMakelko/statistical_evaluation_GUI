@@ -14,7 +14,8 @@ import pandas as pd
 from pandastable import Table
 import matplotlib.pyplot as plot
 from scipy.stats import linregress
-from prep_stats import temp_time, humi_time
+from prep_stats import temp_time, df_timestamp
+from tkcalendar import *
 
 # Browsing the input file
 from sympy.stats import independent
@@ -243,23 +244,35 @@ def on_click():
     global df2
     # bekomme das ausgewählte column aus dem OptionMmenu
     val = selected.get()
+    #übergege den column in ein neue DataFrame
     df2 = temp_time[f"{val}"]
-
     print(df2)
 
+# funktion um datum auszuwählen
+def grab_date_first():
+    label_first_date.config(text=cal.get_date())
+
+def grab_date_last():
+    label_last_date.config(text=cal.get_date())
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # folgend wurde .pack() durch .grid() Funktion ersetzt / wieder zurückgesetzt
 # GUI-Widgets einrichten
 root = Tk()
 # Titelname des Fensters
-root.title('statistische Auswertung mit Python')
+root.title("static_py")
 # einstellen der Fenstergröße / wenn nicht angegeben wird das Fenster jeweils angepasst
 #root.minsize(600, 600)
 #root.maxsize(600, 600)
-
+# erstellen eines Containers für den Titel des Programms
+topFrame = Frame(root, width=1350, height=50,bd=4, relief="ridge")# mit bd=4 und relief="ridge" Umrandung des Titels erstellt
+topFrame.pack(side=TOP, fill=X, expand=1, anchor=N)
+titleLabel = Label(topFrame, font=('arial', 12, 'bold'),
+                   text="statistische Auswertung und Visualisierung von Datenbankdaten",
+                   bd=5, anchor=W)
+titleLabel.pack(side=LEFT)
 #---------------------------------------------------------------------------------------------#
-# Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat.
+# Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat, in einem Fenster was eingebettet wird.
 frame = Frame(root)
 frame.pack(fill=BOTH)
 #---------------------------------------------------------------------------------------------#
@@ -273,7 +286,8 @@ infoLabel = Label(fr, text='Select Excel/CSV file') # (font=('Calibri', 16)) ben
 infoLabel.pack(anchor=W) # benutze (pady=10) um einen abstand zu dem nächsten block in der y-achse zu halten / dassselbe gilt (padx=10) für x-achse
 # erstellen des Browse Buttons
 browseBtn = Button(fr, text='Browse', command=browse)
-browseBtn.pack(side=LEFT)
+browseBtn.pack(side=LEFT, anchor=N)
+
 #---------------------------------------------------------------------------------------------#
 # erstellen ein neuen Frame
 fr = Frame(root)
@@ -290,9 +304,6 @@ btnLinReg.pack(side=LEFT)
 # Visualisierungstaste erstellen
 btnVisual = Button(fr, text="Visualization", command=visualizeData, state=tk.DISABLED)
 btnVisual.pack(side=LEFT)
-# Beenden Taste erstellen
-btnQuit = Button(fr, text="Beenden", command=root.destroy)
-btnQuit.pack(side=LEFT)
 
 #---------------------------------------------------------------------------------------------#
 # der container der radiobuttons / untergeordnet von (frameBtn).
@@ -316,8 +327,6 @@ r3 = Radiobutton(fr, text="Liniendiagramm", variable=option, value=3, command=en
 r3.pack(side= LEFT)
 r4 = Radiobutton(fr, text="Balkendiagramm", variable=option, value=4, command=enableVis)
 r4.pack(side= LEFT)
-#r5 = Radiobutton(frameBtn, text="Pie Chart", variable=option, value=5, command=enableVis) # wird nicht benötigt
-#r5.pack(in_=top_frameBtn, side=LEFT)
 
 
 # Auswählen eines columns
@@ -331,9 +340,88 @@ options.pack()
 button = Button(root, text='OK', command=on_click)
 button.pack()
 
-# frame for table and button "Next Data"
-frame_data = Frame(root)
-frame_data.pack()
+# neue container für eine neue Zeile / hier war vorher der kalender
+#fr = Frame(root)
+#fr.pack()
+
+
+
+# neuer container für die Beenden Taste
+fr = Frame(root)
+fr.pack(fill=X, side=TOP)
+# Beenden Taste erstellen
+btnQuit = Button(fr, text="Beenden", command=root.destroy)
+btnQuit.pack()
+
+##########################################################################################################################################################################################
+kalender = Tk()
+kalender.title('Kalender')
+
+#---------------------------------------------------------------------------------------------#
+# erstellen eines containers auf der rechten Seite für den Kalender
+block1 = Frame(kalender)
+block1.pack()
+#---------------------------------------------------------------------------------------------#
+# Kalender
+cal= Calendar(block1, selectmode="day", year=2021, month=9, day=6)
+cal.pack(side=RIGHT)
+
+my_button= Button(kalender, text="border_start", command=grab_date_first)
+my_button.pack(anchor=E)
+
+label_first_date= Label(kalender, text="None")
+label_first_date.pack(anchor=E)
+
+my_button= Button(kalender, text="border_end", command=grab_date_last)
+my_button.pack(anchor=E)
+
+label_last_date= Label(kalender, text="None")
+label_last_date.pack(anchor=E)
+
+
+
+
+
+
+
+
+
+
+
+
+# def add():
+#     blank.delete(0, END)
+#     Ans = int(num1.get()) + int(num2.get())
+#     blank.insert(0, Ans)
+
+
+# main.geometry('500x100')
+# Label(main, text = "Enter Num 1:").grid(row=0)
+# Label(main, text = "Enter Num 2:").grid(row=1)
+# Label(main, text = "The Answer is:").grid(row=2)
+
+
+# num1 = Entry(main)
+# num2 = Entry(main)
+# blank = Entry(main)
+
+
+# num1.grid(row=0, column=1)
+# num2.grid(row=1, column=1)
+# blank.grid(row=2, column=1)
+
+
+# Button(main, text='Quit', command=main.destroy).grid(row=4, column=0, sticky=W)
+# Button(main, text='Add', command=add).grid(row=0, column=3, sticky=W,)
+# Button(main, text='Subtract', command=sub).grid(row=0, column=4, sticky=W)
+# Button(main, text='Multiply', command=mult).grid(row=0, column=5, sticky=W)
+# Button(main, text='Divide', command=div).grid(row=0, column=6, sticky=W)
+# Button(main, text='^2', command=sq).grid(row=0, column=7, sticky=W)
+# Button(main, text='Clear', command=clear).grid(row=0, column=9, sticky=W)
+###########################################################################
+
+
+
 
 
 
