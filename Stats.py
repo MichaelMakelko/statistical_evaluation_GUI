@@ -14,7 +14,7 @@ import pandas as pd
 from pandastable import Table
 import matplotlib.pyplot as plot
 from scipy.stats import linregress
-from prep_stats import temp_time, df_timestamp, choose_date_test
+from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df
 from tkcalendar import *
 
 # Browsing the input file
@@ -51,9 +51,6 @@ def readFile(loc):
 
     # Draw the table in case multiple files are being opened using the application
     pt.redraw()
-#########################################################################################################################################################################
-
-
 
 
 # Enable the Visualize button when any radio button is pressed
@@ -149,8 +146,16 @@ def grab_date_first():
     label_first_date.config(text=cal.get_date())
     # speicher das Datum ab
     saveFirstDate = cal.get_date()
-    # flage setzen
-    flag_A = True
+    saveFirstDate = pd.to_datetime(saveFirstDate)
+
+    fi = firstLast_temp_df["longtime"].iloc[0]
+    la = firstLast_temp_df["longtime"].iloc[1]
+    # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
+    if fi < saveFirstDate and la > saveFirstDate:
+        pass
+    else:
+        messagebox.showwarning(title="Warnung", message="Das ausgewählte Datum ist nicht in der Datenbank aufgenommen")
+    
 
 # zweites Datum für den Zeitraum wählen
 def grab_date_last():
@@ -159,24 +164,37 @@ def grab_date_last():
     label_last_date.config(text=cal.get_date())
     # speicher das Datum ab
     saveLastDate = cal.get_date()
-    # flage setzen
-    flag_B = True
+    # wandele das Datum von str in ein Timestamp um (für den vergelich notwendig)
+    saveLastDate = pd.to_datetime(saveLastDate)
 
+    fi = firstLast_temp_df["longtime"].iloc[0]
+    la = firstLast_temp_df["longtime"].iloc[1]
+    # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
+    if fi < saveLastDate and la > saveLastDate:
+        pass
+    else:
+        messagebox.showwarning(title="Warnung", message="Das ausgewählte Datum ist nicht in der Datenbank aufgenommen")
+    
 
 # eingegebene Grenzen werden in ein DataFrame gefiltert
 def df_filter_date():
     global df_date
-    df_date = choose_date_test(saveFirstDate, saveLastDate)
+    df_date = choose_date_gui(saveFirstDate, saveLastDate)
     print(df_date)
+
+    pt = Table(frame_tabelle_date, dataframe=df_date)
+    pt.show()
     
+
 
 # Kalender mittles .grid() positioniert
 def open_kalender():
-    flag_button = False
+    global frame_tabelle_date
     global label_first_date 
     global label_last_date
     global cal
 
+    # Hauptfenster (neue Fenster)
     kalender = Tk()
     kalender.title('Kalender')
 
@@ -190,25 +208,38 @@ def open_kalender():
     block1.grid()
     #---------------------------------------------------------------------------------------------#
     
-    my_button= Button(block1, text="border_start", command=grab_date_first)
+    my_button= Button(block1, text="Bestätigen", command=grab_date_first)
     my_button.grid(column=0 , row=1)
 
     label_first_date= Label(block1, text="")
     label_first_date.grid(column=1 , row=1)
 
-    my_button= Button(block1, text="border_end", command=grab_date_last)
+    my_button= Button(block1, text="Bestätigen", command=grab_date_last)
     my_button.grid(column=0 , row=2)
 
     label_last_date= Label(block1, text="")
     label_last_date.grid(column=1 , row=2)
+    #---------------------------------------------------------------------------------------------#
+    # einblenden der Tabelle des eingegebenen Zeitraums
+    frame_tabelle_date = Frame(kalender)
+    frame_tabelle_date.grid()
+    #---------------------------------------------------------------------------------------------#
+
+    block1 = Frame(kalender)
+    block1.grid()
+
+    create_df_date = Button(block1, text="Erzeuge Tabelle", command=df_filter_date)
+    create_df_date.grid(pady=10)
 
     KalButton = Button(block1, text="Beenden", command=kalender.destroy)
     KalButton.grid(column=0 , row=3)
 
-    create_df_date = Button(block1, text="Erzeuge Tabelle", command=df_filter_date)
-    create_df_date.grid()
-
-  
+# funktion der Taste "Tablle" um den ausgewählten Zeitraum und den ausgewählten column
+def merge_df():
+    merged_df = pd.merge(df_date, df2 , left_index=True, right_index=True)
+    merged_df = merged_df.dropna()
+    pt = Table(frameMerged, dataframe=merged_df)
+    pt.show()
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -252,7 +283,7 @@ fr.pack(fill=X, side=TOP)
 instr = Label(fr, text="Select Data from table and perform following operations")
 instr.pack(anchor=W)
 # Visualisierungstaste erstellen
-btnVisual = Button(fr, text="Visualization", command=visualizeData, state=tk.DISABLED)
+btnVisual = Button(fr, text="Visualisierung", command=visualizeData, state=tk.DISABLED)
 btnVisual.pack(side=LEFT)
 
 #---------------------------------------------------------------------------------------------#
@@ -295,6 +326,14 @@ fr.pack(fill=X, side=TOP)
 #---------------------------------------------------------------------------------------------#
 KalenderBtn = Button(fr, text="Kalender", command=open_kalender)
 KalenderBtn.pack(anchor=W)
+
+connButton = Button(fr, text="Tabelle", command=merge_df)
+connButton.pack(pady=10)
+
+#---------------------------------------------------------------------------------------------#
+# neuer container für die Tabelle mit ausgewähltem Zeitraum und ausgewähltem Column
+frameMerged = Frame(root)
+frameMerged.pack(fill=BOTH)
 #---------------------------------------------------------------------------------------------#
 # neuer container für die Beenden Taste
 fr = Frame(root)

@@ -452,80 +452,80 @@ def statistic_funcion_dynamic(choosen_merged, save_string):
 # - ausgewählten Tag oder Bereich (als DataFrame)
 # choose_date() beinhaltet die Funktion commpare_date_input(compare_value) welche prüft automatisch prüft ob der eingebene Tag oder Bereich in dem in der Datenbank aufgenommenen Bereich liegt
 
-def choose_date(utc_stamp):
-    # deklarierend er globalen Variabeln
-    global filtered_df_raw
-    global filtered_df_date
-    global input_day
-    global final_flag
-    global input_a
-    global input_beginn
-    global input_end
-    # Funktion pick_DataFrame() wird vorher angesprochen
+# def choose_date(utc_stamp):
+#     # deklarierend er globalen Variabeln
+#     global filtered_df_raw
+#     global filtered_df_date
+#     global input_day
+#     global final_flag
+#     global input_a
+#     global input_beginn
+#     global input_end
+#     # Funktion pick_DataFrame() wird vorher angesprochen
    
-    print("Sie können ein Datum oder einen Zeitraum innerhalb der oben genannten Grenzen wählen.")
-    print("Geben Sie (1) für ein bestimmtes Datum ein. \n Geben Sie (2) für einen Zeitraum ein \n bestätigen Sie anschließend mit Enter ") 
-    # ansprechen der Variabel input_a nötig
-    input_a = int
-    # solange 1 oder 2 nicht eingegeben wird, wird die eingabe wiederholt 
-    while input_a != "1" or "2":
+#     print("Sie können ein Datum oder einen Zeitraum innerhalb der oben genannten Grenzen wählen.")
+#     print("Geben Sie (1) für ein bestimmtes Datum ein. \n Geben Sie (2) für einen Zeitraum ein \n bestätigen Sie anschließend mit Enter ") 
+#     # ansprechen der Variabel input_a nötig
+#     input_a = int
+#     # solange 1 oder 2 nicht eingegeben wird, wird die eingabe wiederholt 
+#     while input_a != "1" or "2":
         
-        input_a = input()
+#         input_a = input()
         
-        # eingabe für ein bestimmten Tag ausgewählt
-        if input_a == "1":
-            # Ausgabe um einen bestimmten Tag auszuwählen
-            print("Geben Sie jetzt das Datum ein \n Geben Sie in der folgenden Folgenden Reihenfolge ein \n Jahr-Monat-Tag und bestätigen Sie anschließend mit Enter")
-            # erstelle den Merker für das prüfen ob das Datum in dem aufgenommenen Datenbereich liegt
-            final_flag = False
+#         # eingabe für ein bestimmten Tag ausgewählt
+#         if input_a == "1":
+#             # Ausgabe um einen bestimmten Tag auszuwählen
+#             print("Geben Sie jetzt das Datum ein \n Geben Sie in der folgenden Folgenden Reihenfolge ein \n Jahr-Monat-Tag und bestätigen Sie anschließend mit Enter")
+#             # erstelle den Merker für das prüfen ob das Datum in dem aufgenommenen Datenbereich liegt
+#             final_flag = False
             
-            while final_flag == False:
-                    # eingeben des tages in der Folge: jahr-monat-tag
-                    input_day = input()
-                    # überprüfende Funktion ob der eingegeben tag in dem Datenberreich liegt
-                    compare_value = input_day
-                    # folgende Funktion setzt den final_flag=True falls der Tag in dem Bereich der aufgenommenen Daten liegt
-                    # falls der tag nicht in dem Bereich der aufgenommenen Daten Liegt wird final_flag=Flase aus der Funktion zurückgegeben und eingabe soll wiederholt werden
-                    commpare_date_input(compare_value)
+#             while final_flag == False:
+#                     # eingeben des tages in der Folge: jahr-monat-tag
+#                     input_day = input()
+#                     # überprüfende Funktion ob der eingegeben tag in dem Datenberreich liegt
+#                     compare_value = input_day
+#                     # folgende Funktion setzt den final_flag=True falls der Tag in dem Bereich der aufgenommenen Daten liegt
+#                     # falls der tag nicht in dem Bereich der aufgenommenen Daten Liegt wird final_flag=Flase aus der Funktion zurückgegeben und eingabe soll wiederholt werden
+#                     commpare_date_input(compare_value)
                     
-            # verwenden die pandas .loc funktion mir einer abfrage im Datafr5ame der dann den Tag filtert   
-            filtered_df_raw = utc_stamp.loc[(utc_stamp >= f"{input_day}"+" 00:00:00") & (utc_stamp <= f"{input_day}"+" 23:59:59")]
-            # speichere den Tag in ein Dataframe
-            filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
-            # gebe das DataFrame zurück und verlasse die Funktion
-            return filtered_df_date
+#             # verwenden die pandas .loc funktion mir einer abfrage im Datafr5ame der dann den Tag filtert   
+#             filtered_df_raw = utc_stamp.loc[(utc_stamp >= f"{input_day}"+" 00:00:00") & (utc_stamp <= f"{input_day}"+" 23:59:59")]
+#             # speichere den Tag in ein Dataframe
+#             filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
+#             # gebe das DataFrame zurück und verlasse die Funktion
+#             return filtered_df_date
 
-        # eingabe für einen Bestimmten Bereich eingegeben
-        if input_a == "2":
-            # Ausgabe um den Bereich auszuwählen
-            print("Geben Sie jetzt den Zeitraum ein \n Geben Sie in der folgenden Folgenden Reihenfolge ein \n Jahr-Monat-Tag und bestätigen Sie anschließend mit Enter")
-            # erstelle den Merker für das prüfen ob das Datum in dem aufgenommenen Datenbereich liegt
-            final_flag = False
-            while final_flag == False:
-                    input_beginn = input("Geben Sie den Beginn des Zeitraumes ein \n")
-                    compare_value = input_beginn
-                    commpare_date_input(compare_value)
+#         # eingabe für einen Bestimmten Bereich eingegeben
+#         if input_a == "2":
+#             # Ausgabe um den Bereich auszuwählen
+#             print("Geben Sie jetzt den Zeitraum ein \n Geben Sie in der folgenden Folgenden Reihenfolge ein \n Jahr-Monat-Tag und bestätigen Sie anschließend mit Enter")
+#             # erstelle den Merker für das prüfen ob das Datum in dem aufgenommenen Datenbereich liegt
+#             final_flag = False
+#             while final_flag == False:
+#                     input_beginn = input("Geben Sie den Beginn des Zeitraumes ein \n")
+#                     compare_value = input_beginn
+#                     commpare_date_input(compare_value)
                     
-            # final_flag muss zurückgesetzt werden da noch das einzuschließende Datum eingegeben werden muss
-            final_flag = False
+#             # final_flag muss zurückgesetzt werden da noch das einzuschließende Datum eingegeben werden muss
+#             final_flag = False
             
-            while final_flag == False:
-                    input_end = input("Geben Sie das Ende des Zeitraumes ein \n")
-                    compare_value = input_end
-                    commpare_date_input(compare_value)
+#             while final_flag == False:
+#                     input_end = input("Geben Sie das Ende des Zeitraumes ein \n")
+#                     compare_value = input_end
+#                     commpare_date_input(compare_value)
                     
-            # die eingabe wird übergeben
-            filtered_df_raw = utc_stamp.loc[(utc_stamp >= f"{input_beginn}") & (utc_stamp <= f"{input_end}")]
-            # gefilterter Berreich wird in einen neuen DataFrame abgespeichert
-            filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
-            # abschleißend wird das DataFrame zurückgegeben und die Funktion verlassen
-            return filtered_df_date
+#             # die eingabe wird übergeben
+#             filtered_df_raw = utc_stamp.loc[(utc_stamp >= f"{input_beginn}") & (utc_stamp <= f"{input_end}")]
+#             # gefilterter Berreich wird in einen neuen DataFrame abgespeichert
+#             filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
+#             # abschleißend wird das DataFrame zurückgegeben und die Funktion verlassen
+#             return filtered_df_date
         
-        # falls die Eingabe nicht 1 oder 2 war    
-        else:
-            print("Die Eingabe ist unzulässig")
-#######################################################################  TEST  ##################################################################################################################
-def choose_date_test(saveFirstDate, saveLastDate):
+#         # falls die Eingabe nicht 1 oder 2 war    
+#         else:
+#             print("Die Eingabe ist unzulässig")
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+def choose_date_gui(saveFirstDate, saveLastDate):
     # deklarierend er globalen Variabeln
     global filtered_df_raw
     global filtered_df_date
@@ -535,7 +535,6 @@ def choose_date_test(saveFirstDate, saveLastDate):
     filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
     # gebe das DataFrame zurück und verlasse die Funktion
     return filtered_df_date
-#########################################################################################################################################################################################
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # vorzubereitende Variablen für die Funktion commpare_date_input()
 # den letzten Index des DataFrame speichern
