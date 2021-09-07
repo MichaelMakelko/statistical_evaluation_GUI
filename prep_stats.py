@@ -524,7 +524,18 @@ def choose_date(utc_stamp):
         # falls die Eingabe nicht 1 oder 2 war    
         else:
             print("Die Eingabe ist unzulässig")
-
+#######################################################################  TEST  ##################################################################################################################
+def choose_date_test(saveFirstDate, saveLastDate):
+    # deklarierend er globalen Variabeln
+    global filtered_df_raw
+    global filtered_df_date
+    # verwenden die pandas .loc funktion mir einer abfrage im Datafr5ame der dann den Tag filtert   
+    filtered_df_raw = utc_stamp.loc[(utc_stamp >= f"{saveFirstDate}"+" 00:00:00") & (utc_stamp <= f"{saveLastDate}"+" 23:59:59")]
+    # speichere den Tag in ein Dataframe
+    filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
+    # gebe das DataFrame zurück und verlasse die Funktion
+    return filtered_df_date
+#########################################################################################################################################################################################
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # vorzubereitende Variablen für die Funktion commpare_date_input()
 # den letzten Index des DataFrame speichern
