@@ -23,6 +23,7 @@ from sympy.stats import independent
 # importiere Module aus anderen Dateien
 from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
 from kalender_window import open_kalender
+from datensatz_window import open_datensatz
 
 
 # auswählen einer Datei / wird jedoch nicht benötigt da ich DataFrames verwenden möchte / oder ich erweitere meinen bestehenden Code und speichere die DataFrames in .csv oder excel-dateien
@@ -135,31 +136,11 @@ def visualizeData():
         plot.show()
 
 
-# funktion wird aktiviert wenn Button OK gedrückt wird
-def on_click():
-    global df2
-    # bekomme das ausgewählte column aus dem OptionMmenu
-    val = selected.get()
-    #übergege den column in ein neue DataFrame
-    df2 = temp_time[f"{val}"]
-    df2 = pd.DataFrame(data=df2)
-    df2_clear = df2.dropna()
-    # neues Fenster erstellen um den ausgewählten Sensor anzuzeigen
-    tabelleSens = Tk()
-    tabelleSens.title("Tabelle - ausgewählter Sensor")
-    #---------------------------------------------------------------------------------------------#
-    frame_tabelle_sens = Frame(tabelleSens)
-    frame_tabelle_sens.pack(fill=X, side=TOP, padx=10, pady=10)
-    #---------------------------------------------------------------------------------------------#
-    pt = Table(frame_tabelle_sens, dataframe=df2_clear)
-    pt.show()
-    #print(df2)
-
-
 # funktion der Taste "Tablle" um den ausgewählten Zeitraum und den ausgewählten column
 def merge_df():
     # df_date (das ausgewählte datum als DataFrame) erst in der Funktion importieren wenn es benötigt wird!
     from kalender_window import df_date
+    from datensatz_window import df2
 
     merged_df = pd.merge(df_date, df2 , left_index=True, right_index=True)
     merged_df = merged_df.dropna()
@@ -175,8 +156,8 @@ def merge_df():
     pt.show()
 
 
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# folgend wurde .pack() durch .grid() Funktion ersetzt / wieder zurückgesetzt
+
+# Beginn der Haupt-GUI
 # GUI-Widgets einrichten
 root = Tk()
 # Titelname des Fensters
@@ -184,99 +165,116 @@ root.title("static_py")
 # einstellen der Fenstergröße / wenn nicht angegeben wird das Fenster jeweils angepasst
 #root.minsize(600, 600)
 #root.maxsize(600, 600)
+#---------------------------------------------------------------------------------------------#
 # erstellen eines Containers für den Titel des Programms
 topFrame = Frame(root, width=1350, height=50,bd=4, relief="ridge")# mit bd=4 und relief="ridge" Umrandung des Titels erstellt
 topFrame.pack(side=TOP, fill=X, expand=1, anchor=N)
+#---------------------------------------------------------------------------------------------#
 titleLabel = Label(topFrame, font=('arial', 12, 'bold'),
                    text="statistische Auswertung und Visualisierung von Datenbankdaten",
                    bd=5, anchor=W)
-titleLabel.pack(side=LEFT)
+titleLabel.pack(side=TOP)
 #---------------------------------------------------------------------------------------------#
-# Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat, in einem Fenster was eingebettet wird.
-frame = Frame(root)
-frame.pack(fill=BOTH)
+#---------------------------------------------------------------------------------------------#
+# übergeordnetes oberes Frame unter dem Titel
+über_Frame = Frame(root)
+über_Frame.pack(side=TOP, anchor=W)
+#---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # erstelle ersten Frame
-fr = Frame(root)
-fr.pack(fill=X, side=TOP)
+fr = LabelFrame(über_Frame, text="Datensatz hochladen")
+fr.pack(side=LEFT, anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 # Text über dem Browse Button
-infoLabel = Label(fr, text='Select Excel/CSV file') # (font=('Calibri', 16)) benutze die Funktion um style und schriftgröße
-# anchor verwenden um den text in einem Frame an eine Seite zu knüpfen
-infoLabel.pack(anchor=W) # benutze (pady=10) um einen abstand zu dem nächsten block in der y-achse zu halten / dassselbe gilt (padx=10) für x-achse
+infoLabel_up = Label(fr, text='.xlsx/.csv') # (font=('Calibri', 16)) benutze die Funktion um style und schriftgröße
+infoLabel_up.grid(column=0, row=0, padx=5, pady=5) # benutze (pady=10) um einen abstand zu dem nächsten block in der y-achse zu halten / dassselbe gilt (padx=10) für x-achse
 # erstellen des Browse Buttons
 browseBtn = Button(fr, text='Browse', command=browse)
-browseBtn.pack(side=LEFT, anchor=N)
-
-# erstelle eine Taste um die Struktur der Datenbank anzuzeigen 
-
+browseBtn.grid(column=0, row=1, padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
-# erstellen ein neuen Frame
-fr = Frame(root)
-fr.pack(fill=X, side=TOP)
+# erstellen ein neuen Frame / rechts
+fr = LabelFrame(über_Frame, text="Datensatz runterladen")
+fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
-instr = Label(fr, text="Select Data from table and perform following operations")
-instr.pack(anchor=W)
+infoLabel_do = Label(fr, text="Zeitraum\nwählen") 
+infoLabel_do.grid(column=0, row=0, padx=5, pady=5)
+
+KalenderBtn = Button(fr, text="Kalender", command=open_kalender)
+KalenderBtn.grid(column=0, row=1, padx=5, pady=5)
+
+infoLabel_do1 = Label(fr, text="Datensatz\nwählen") 
+infoLabel_do1.grid(column=1, row=0, padx=5, pady=5)
+
+KalenderBtn = Button(fr, text="Datensatz", command=open_datensatz)
+KalenderBtn.grid(column=1, row=1, padx=5, pady=5)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+# neues übergeordnetes Frame
+über_Frame = Frame(root)
+über_Frame.pack(side=TOP, anchor=W)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+fr = LabelFrame(über_Frame, text="Aktion")
+fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
+
 # Visualisierungstaste erstellen
 btnVisual = Button(fr, text="Visualisierung", command=visualizeData, state=tk.DISABLED)
-btnVisual.pack(side=LEFT)
-
-#---------------------------------------------------------------------------------------------#
-# der container der radiobuttons / untergeordnet von (frameBtn).
-fr = Frame(root)
-fr.pack(fill=X, side=TOP)
-#---------------------------------------------------------------------------------------------#
-option = IntVar()
-r1 = Radiobutton(fr, text="Streuungsdiagramm", variable=option, value=1, command=enableVis)
-r1.pack(side= LEFT)
-r2 = Radiobutton(fr, text="Histogram", variable=option, value=2, command=enableVis)
-r2.pack(side= LEFT)
-r3 = Radiobutton(fr, text="Liniendiagramm", variable=option, value=3, command=enableVis)
-r3.pack(side= LEFT)
-r4 = Radiobutton(fr, text="Balkendiagramm", variable=option, value=4, command=enableVis)
-r4.pack(side= LEFT)
-
-#---------------------------------------------------------------------------------------------#
-# neuer container für die auswahl eines columns von Temperatur Sensoren und bestätigen Buttons
-fr = Frame(root)
-fr.pack(fill=X, side=TOP)
-#---------------------------------------------------------------------------------------------#
-# Auswählen eines columns
-# bekomme die column Namen aus dem DataFrame
-values = list(temp_time) 
-selected = StringVar()
-# erstelln des Infotextes
-info_optionmenu = Label(fr, text="Sensor auswählen")
-info_optionmenu.pack(anchor=W)
-# erstelle einen Button der aufrollt und alle column namen anzeigt die ausgewählt werden können
-options = OptionMenu(fr, selected, *values)
-options.pack(side=LEFT)
-# Button zum auswählen des columns
-button = Button(fr, text='Bestätigen', command=on_click)
-button.pack(side=LEFT)
-#---------------------------------------------------------------------------------------------#
-# neue container für Kalender Button
-fr = Frame(root)
-fr.pack(fill=X, side=TOP)
-#---------------------------------------------------------------------------------------------#
-KalenderBtn = Button(fr, text="Kalender", command=open_kalender)
-KalenderBtn.pack(anchor=W)
+btnVisual.grid(column=0, row=0 ,padx=5, pady=5)
 
 connButton = Button(fr, text="Tabelle", command=merge_df)
-connButton.pack(pady=10)
-
+connButton.grid(column=1, row=0 ,padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
-# neuer container für die Tabelle mit ausgewähltem Zeitraum und ausgewähltem Column
-frameMerged = Frame(root)
-frameMerged.pack(fill=BOTH)
+#---------------------------------------------------------------------------------------------#
+# neues übergeordnetes Frame
+über_Frame = Frame(root)
+über_Frame.pack(side=TOP, anchor=W)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+fr = LabelFrame(über_Frame, text="statistische Visualisierung")
+fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
+#---------------------------------------------------------------------------------------------#
+option = IntVar()
+r1 = Radiobutton(fr, text="Streuungs-\ndiagramm", variable=option, value=1, command=enableVis)
+r1.grid(column=0, row=0, padx=5, pady=5)
+r2 = Radiobutton(fr, text="Histogram", variable=option, value=2, command=enableVis)
+r2.grid(column=1, row=0, padx=5, pady=5)
+r3 = Radiobutton(fr, text="Linien-\ndiagramm", variable=option, value=3, command=enableVis)
+r3.grid(column=2, row=0, padx=5, pady=5)
+r4 = Radiobutton(fr, text="Balken-\ndiagramm", variable=option, value=4, command=enableVis)
+r4.grid(column=3, row=0, padx=5, pady=5)
+r5 = Radiobutton(fr, text="Boxplot", variable=option, value=5, command=enableVis)
+r5.grid(column=4, row=0, padx=5, pady=5)
+#---------------------------------------------------------------------------------------------#
+fr = LabelFrame(über_Frame, text="statistische Verfahren")
+fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
+#---------------------------------------------------------------------------------------------#
+################################################################################################################################
+################################################################################################################################ ANPASEN STATISTISCHE VERFAHREN VARIABELN AUF DIE AUSWERTUNGEN prep_stats !!!!!!
+option = IntVar()
+r6 = Radiobutton(fr, text="standart-\nabweichung", variable=option, value=6, command=enableVis)
+r6.grid(column=0, row=0, padx=5, pady=5)
+r7 = Radiobutton(fr, text="Median", variable=option, value=7, command=enableVis)
+r7.grid(column=1, row=0, padx=5, pady=5)
+r8 = Radiobutton(fr, text="Mittel-\nwert", variable=option, value=8, command=enableVis)
+r8.grid(column=2, row=0, padx=5, pady=5)
+r9 = Radiobutton(fr, text="oberes\nQuantil", variable=option, value=9, command=enableVis)
+r9.grid(column=3, row=0, padx=5, pady=5)
+r10 = Radiobutton(fr, text="unteres\nQuantil", variable=option, value=10, command=enableVis)
+r10.grid(column=4, row=0, padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
 # neuer container für die Beenden Taste
 fr = Frame(root)
-fr.pack(fill=X, side=TOP)
+fr.pack(side=TOP, anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 # Beenden Taste erstellen
 btnQuit = Button(fr, text="Beenden", command=root.destroy)
-btnQuit.pack()
-
+btnQuit.grid()
+##################################################################################################################################################
+################################################################################################################################################## PROGRAMMIEREN SODASS DIE TABELLE IN EINEM NEUEN FENSTER ANGEZEIGT WIRD
+# Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat, in einem Fenster was eingebettet wird.
+#---------------------------------------------------------------------------------------------#
+frame = Frame(root)
+frame.pack(fill=BOTH)
+#---------------------------------------------------------------------------------------------#
 # Starting the Tkinter application
 root.mainloop()

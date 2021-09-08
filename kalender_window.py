@@ -133,7 +133,7 @@ def open_kalender():
     create_df_date = Button(frame_kalender, text="Erzeuge Tabelle", command=df_filter_date)
     create_df_date.grid(column=0 , row=0 ,padx=5, pady=5)
 
-    create_df_date = Button(frame_kalender, text="Zurücksetz.", command=refresh_date_border_label)
+    create_df_date = Button(frame_kalender, text="Zurücksetzen", command=refresh_date_border_label)
     create_df_date.grid(column=1 , row=0 ,padx=5, pady=5)
 
     KalButton = Button(frame_kalender, text="Beenden", command=kalender.destroy)
