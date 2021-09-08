@@ -7,14 +7,15 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog as fd
 import tkinter as tk
+from tkinter import ttk
 from tkinter.ttk import Combobox
 from numpy import left_shift
 from numpy.core.fromnumeric import size
 import pandas as pd
-from pandastable import Table
+from pandastable import Table, data
 import matplotlib.pyplot as plot
 from scipy.stats import linregress
-from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df
+from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
 from tkcalendar import *
 
 # Browsing the input file
@@ -137,7 +138,18 @@ def on_click():
     val = selected.get()
     #übergege den column in ein neue DataFrame
     df2 = temp_time[f"{val}"]
-    print(df2)
+    df2 = pd.DataFrame(data=df2)
+    df2_clear = df2.dropna()
+    # neues Fenster erstellen um den ausgewählten Sensor anzuzeigen
+    tabelleSens = Tk()
+    tabelleSens.title("Tabelle - ausgewählter Sensor")
+    #---------------------------------------------------------------------------------------------#
+    frame_tabelle_sens = Frame(tabelleSens)
+    frame_tabelle_sens.pack(fill=X, side=TOP, padx=10, pady=10)
+    #---------------------------------------------------------------------------------------------#
+    pt = Table(frame_tabelle_sens, dataframe=df2_clear)
+    pt.show()
+    #print(df2)
 
 # erstes Datum für den Zeitruam wählen
 def grab_date_first():
@@ -178,13 +190,30 @@ def grab_date_last():
 
 # eingegebene Grenzen werden in ein DataFrame gefiltert
 def df_filter_date():
+    global tabelle
     global df_date
     df_date = choose_date_gui(saveFirstDate, saveLastDate)
     print(df_date)
 
+    # neues Fenster erstellen um den ausgewählten Zeitraum anzuzeugen
+    tabelle = Tk()
+    tabelle.title("Tabelle - ausgewählter Zeitraum")
+    #---------------------------------------------------------------------------------------------#
+    frame_tabelle_date = Frame(tabelle)
+    frame_tabelle_date.pack(fill=X, side=TOP, padx=10, pady=10)
+    #---------------------------------------------------------------------------------------------#
     pt = Table(frame_tabelle_date, dataframe=df_date)
     pt.show()
     
+def refresh_date_border_label():
+    label_first_date.config(text="")
+    label_last_date.config(text="")
+    quit(tabelle)
+
+
+def quit(x):
+    x.destroy()
+
 
 
 # Kalender mittles .grid() positioniert
@@ -197,48 +226,72 @@ def open_kalender():
     # Hauptfenster (neue Fenster)
     kalender = Tk()
     kalender.title('Kalender')
-
+    #---------------------------------------------------------------------------------------------#
+    frame_kalender = LabelFrame(kalender, text="Kalender")
+    frame_kalender.pack(side=TOP, pady=10, padx=10, anchor=W)
+    #---------------------------------------------------------------------------------------------#
     # Kalender
-    cal= Calendar(kalender, selectmode="day", year=2021, month=9, day=6)
-    cal.grid()
-
+    cal = Calendar(frame_kalender, selectmode="day", year=2021, month=9, day=6)
+    cal.grid(column=0, row=0, pady=5, padx=5)
+    #---------------------------------------------------------------------------------------------#
+    # erstellen einen conatiner für die Info Box
+    frame_kalender = LabelFrame(kalender, text="Infomation")
+    frame_kalender.pack(side=TOP, pady=10, padx=10, anchor=W)
+    #---------------------------------------------------------------------------------------------#
+    info = Label(frame_kalender, text="Der Zeitraum kann ausgewählt werden zwischen dem:")
+    info.grid(column=0, row=0 ,padx=5, pady=5)
+    info = Label(frame_kalender, text= first_string+" und "+ last_string)
+    info.grid(column=0, row=1 ,padx=5, pady=5)
     #---------------------------------------------------------------------------------------------#
     # erstellen einen conatiner für die Tasten
-    block1 = Frame(kalender)
-    block1.grid()
+    frame_kalender = LabelFrame(kalender, text="Auswahl")
+    frame_kalender.pack(side=TOP, pady=10, padx=10, anchor=W)
     #---------------------------------------------------------------------------------------------#
+    # infor erstellen für die auswahl des ersten DAtums
+    fi_label = Label(frame_kalender, text="Erstes Datum bestätigen")
+    fi_label.grid(column=0, row=0, padx=5, pady=5)
+    # erstellen des Knopfes für das bestätigen des ersten Monats
+    my_button= Button(frame_kalender, text="Bestätigen", command=grab_date_first)
+    my_button.grid(column=1 , row=0, pady=5, padx=5)
+
+    label_first_date= Label(frame_kalender, text="")
+    label_first_date.grid(column=0 , row=1, pady=5, padx=5)
+
+    # infor erstellen für die auswahl des ersten DAtums
+    fi_label = Label(frame_kalender, text="Zweites Datum bestätigen")
+    fi_label.grid(column=0, row=2, padx=5, pady=5)
     
-    my_button= Button(block1, text="Bestätigen", command=grab_date_first)
-    my_button.grid(column=0 , row=1)
+    my_button= Button(frame_kalender, text="Bestätigen", command=grab_date_last)
+    my_button.grid(column=1 , row=2, pady=5, padx=5)
 
-    label_first_date= Label(block1, text="")
-    label_first_date.grid(column=1 , row=1)
-
-    my_button= Button(block1, text="Bestätigen", command=grab_date_last)
-    my_button.grid(column=0 , row=2)
-
-    label_last_date= Label(block1, text="")
-    label_last_date.grid(column=1 , row=2)
+    label_last_date= Label(frame_kalender, text="")
+    label_last_date.grid(column=0 , row=3, pady=5, padx=5)
     #---------------------------------------------------------------------------------------------#
-    # einblenden der Tabelle des eingegebenen Zeitraums
-    frame_tabelle_date = Frame(kalender)
-    frame_tabelle_date.grid()
+    frame_kalender = LabelFrame(kalender, text="Kommandos")
+    frame_kalender.pack(side=TOP, pady=10, padx=10, anchor=W)
     #---------------------------------------------------------------------------------------------#
+    create_df_date = Button(frame_kalender, text="Erzeuge Tabelle", command=df_filter_date)
+    create_df_date.grid(column=0 , row=0 ,padx=5, pady=5)
 
-    block1 = Frame(kalender)
-    block1.grid()
+    create_df_date = Button(frame_kalender, text="Zurücksetz.", command=refresh_date_border_label)
+    create_df_date.grid(column=1 , row=0 ,padx=5, pady=5)
 
-    create_df_date = Button(block1, text="Erzeuge Tabelle", command=df_filter_date)
-    create_df_date.grid(pady=10)
-
-    KalButton = Button(block1, text="Beenden", command=kalender.destroy)
-    KalButton.grid(column=0 , row=3)
+    KalButton = Button(frame_kalender, text="Beenden", command=kalender.destroy)
+    KalButton.grid(column=2 , row=0 , padx=5, pady=5)
 
 # funktion der Taste "Tablle" um den ausgewählten Zeitraum und den ausgewählten column
 def merge_df():
     merged_df = pd.merge(df_date, df2 , left_index=True, right_index=True)
     merged_df = merged_df.dropna()
-    pt = Table(frameMerged, dataframe=merged_df)
+
+    # neues Fenster erstellen um die ausgewählten Sensor Tabelle anzuzeigen
+    sensGewählt = Tk()
+    sensGewählt.title("Tabelle - ausgewählter Zeitraum + ausgewählter Sensor")
+    #---------------------------------------------------------------------------------------------#
+    frame_tabelle_sens = Frame(sensGewählt)
+    frame_tabelle_sens.pack(fill=X, side=TOP, padx=10, pady=10)
+    #---------------------------------------------------------------------------------------------#
+    pt = Table(frame_tabelle_sens, dataframe=merged_df)
     pt.show()
 
 
@@ -275,6 +328,8 @@ infoLabel.pack(anchor=W) # benutze (pady=10) um einen abstand zu dem nächsten b
 browseBtn = Button(fr, text='Browse', command=browse)
 browseBtn.pack(side=LEFT, anchor=N)
 
+# erstelle eine Taste um die Struktur der Datenbank anzuzeigen 
+
 #---------------------------------------------------------------------------------------------#
 # erstellen ein neuen Frame
 fr = Frame(root)
@@ -302,7 +357,7 @@ r4 = Radiobutton(fr, text="Balkendiagramm", variable=option, value=4, command=en
 r4.pack(side= LEFT)
 
 #---------------------------------------------------------------------------------------------#
-# neuer container für die auswahl eines columns und bestätigen Buttons
+# neuer container für die auswahl eines columns von Temperatur Sensoren und bestätigen Buttons
 fr = Frame(root)
 fr.pack(fill=X, side=TOP)
 #---------------------------------------------------------------------------------------------#
@@ -311,7 +366,7 @@ fr.pack(fill=X, side=TOP)
 values = list(temp_time) 
 selected = StringVar()
 # erstelln des Infotextes
-info_optionmenu = Label(fr, text="wählen Sie einen Sensor")
+info_optionmenu = Label(fr, text="Sensor auswählen")
 info_optionmenu.pack(anchor=W)
 # erstelle einen Button der aufrollt und alle column namen anzeigt die ausgewählt werden können
 options = OptionMenu(fr, selected, *values)
@@ -342,11 +397,6 @@ fr.pack(fill=X, side=TOP)
 # Beenden Taste erstellen
 btnQuit = Button(fr, text="Beenden", command=root.destroy)
 btnQuit.pack()
-
-
-
-
-
 
 # Starting the Tkinter application
 root.mainloop()
