@@ -7,15 +7,16 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog as fd
 import tkinter as tk
-from tkinter import ttk
 from tkinter.ttk import Combobox
 from numpy import left_shift
 from numpy.core.fromnumeric import size
 import pandas as pd
-from pandastable import Table, data
+from pandastable import Table
 import matplotlib.pyplot as plot
 from scipy.stats import linregress
 from tkcalendar import *
+import tkinter as tk
+from tkinter import ttk
 # Browsing the input file
 from sympy.stats import independent
 
@@ -24,6 +25,10 @@ from sympy.stats import independent
 from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
 from kalender_window import open_kalender
 from datensatz_window import open_datensatz
+
+
+
+
 
 
 # auswählen einer Datei / wird jedoch nicht benötigt da ich DataFrames verwenden möchte / oder ich erweitere meinen bestehenden Code und speichere die DataFrames in .csv oder excel-dateien
@@ -58,7 +63,6 @@ def readFile(loc):
     # Draw the table in case multiple files are being opened using the application
     pt.redraw()
 
-
 # Enable the Visualize button when any radio button is pressed
 def enableVis():
     if (btnVisual['state'] == tk.DISABLED):
@@ -72,7 +76,7 @@ def visualizeData():
     data = pt.getSelectedDataFrame()
 
     if data.empty:
-        messagebox.showerror("Data Visualization", "No Data Selected.")
+        ttk.messagebox.showerror("Data Visualization", "No Data Selected.")
         return
 
     # To plot the charts and bars we need numerical values only
@@ -81,7 +85,7 @@ def visualizeData():
     # Getting the columns which contain numeric values
     cols = data.columns.tolist()
     if (len(cols) < 2):
-        messagebox.showerror("Insufficient Data", "Please Select Minimum Two Columns.")
+        ttk.messagebox.showerror("Insufficient Data", "Please Select Minimum Two Columns.")
         return
 
     for col in cols:
@@ -140,9 +144,9 @@ def visualizeData():
 def merge_df():
     # df_date (das ausgewählte datum als DataFrame) erst in der Funktion importieren wenn es benötigt wird!
     from kalender_window import df_date
-    from datensatz_window import df2
+    from datensatz_window import df_temp_gui
 
-    merged_df = pd.merge(df_date, df2 , left_index=True, right_index=True)
+    merged_df = pd.merge(df_date, df_temp_gui , left_index=True, right_index=True)
     merged_df = merged_df.dropna()
 
     # neues Fenster erstellen um die ausgewählten Sensor Tabelle anzuzeigen
@@ -160,120 +164,148 @@ def merge_df():
 # Beginn der Haupt-GUI
 # GUI-Widgets einrichten
 root = Tk()
+
 # Titelname des Fensters
 root.title("static_py")
+
 # einstellen der Fenstergröße / wenn nicht angegeben wird das Fenster jeweils angepasst
 #root.minsize(600, 600)
 #root.maxsize(600, 600)
+
 #---------------------------------------------------------------------------------------------#
 # erstellen eines Containers für den Titel des Programms
-topFrame = Frame(root, width=1350, height=50,bd=4, relief="ridge")# mit bd=4 und relief="ridge" Umrandung des Titels erstellt
+topFrame = Frame(root, width=1350, height=50,bd=4, relief="ridge")# mit bd=4 und relief="ridge" Umrandung des Titels erstellt 
 topFrame.pack(side=TOP, fill=X, expand=1, anchor=N)
 #---------------------------------------------------------------------------------------------#
-titleLabel = Label(topFrame, font=('arial', 12, 'bold'),
+titleLabel = ttk.Label(topFrame, font=('arial', 12, 'bold'),
                    text="statistische Auswertung und Visualisierung von Datenbankdaten",
-                   bd=5, anchor=W)
+                   anchor=W)
 titleLabel.pack(side=TOP)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # übergeordnetes oberes Frame unter dem Titel
-über_Frame = Frame(root)
+über_Frame = ttk.Frame(root)
 über_Frame.pack(side=TOP, anchor=W)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # erstelle ersten Frame
-fr = LabelFrame(über_Frame, text="Datensatz hochladen")
+fr = ttk.LabelFrame(über_Frame, text="Datensatz hochladen")
 fr.pack(side=LEFT, anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 # Text über dem Browse Button
-infoLabel_up = Label(fr, text='.xlsx/.csv') # (font=('Calibri', 16)) benutze die Funktion um style und schriftgröße
+infoLabel_up = ttk.Label(fr, text='.xlsx/.csv') # (font=('Calibri', 16)) benutze die Funktion um style und schriftgröße
 infoLabel_up.grid(column=0, row=0, padx=5, pady=5) # benutze (pady=10) um einen abstand zu dem nächsten block in der y-achse zu halten / dassselbe gilt (padx=10) für x-achse
 # erstellen des Browse Buttons
-browseBtn = Button(fr, text='Browse', command=browse)
+browseBtn = ttk.Button(fr, text='Browse', command=browse)
 browseBtn.grid(column=0, row=1, padx=5, pady=5)
+
 #---------------------------------------------------------------------------------------------#
 # erstellen ein neuen Frame / rechts
-fr = LabelFrame(über_Frame, text="Datensatz runterladen")
+fr = ttk.LabelFrame(über_Frame, text="Datensatz runterladen")
 fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
-infoLabel_do = Label(fr, text="Zeitraum\nwählen") 
+infoLabel_do = ttk.Label(fr, text="Zeitraum\nwählen") 
 infoLabel_do.grid(column=0, row=0, padx=5, pady=5)
 
-KalenderBtn = Button(fr, text="Kalender", command=open_kalender)
+KalenderBtn = ttk.Button(fr, text="Kalender", command=open_kalender)
 KalenderBtn.grid(column=0, row=1, padx=5, pady=5)
 
-infoLabel_do1 = Label(fr, text="Datensatz\nwählen") 
-infoLabel_do1.grid(column=1, row=0, padx=5, pady=5)
+infoLabel_do1 = ttk.Label(fr, text="Datensatz\nwählen") 
+infoLabel_do1.grid(column=2, row=0, padx=5, pady=5)
 
-KalenderBtn = Button(fr, text="Datensatz", command=open_datensatz)
-KalenderBtn.grid(column=1, row=1, padx=5, pady=5)
+KalenderBtn = ttk.Button(fr, text="Datensatz", command=open_datensatz)
+KalenderBtn.grid(column=2, row=1, padx=5, pady=5)
+
+#---------------------------------------------------------------------------------------------#
+# erstellen ein neuen Frame / rechts
+fr = ttk.LabelFrame(über_Frame, text="Status")
+fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
+#---------------------------------------------------------------------------------------------#
+
+fr2 = ttk.Frame(fr)
+fr2.pack(side=TOP,anchor=SW, padx=5, pady=5)
+
+checkDate = ttk.Label(fr2, text="Zeitraum:")
+checkDate.pack(side=LEFT)
+
+box_date = Label(fr2, bg="red")
+box_date.pack(side=LEFT)
+
+fr2 = ttk.Frame(fr)
+fr2.pack(side=TOP,anchor=SW, padx=5, pady=5)
+
+checkData = ttk.Label(fr2, text="Datensatz:")
+checkData.pack(side=LEFT)
+
+box_data = Label(fr2, bg="red")
+box_data.pack(side=LEFT)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # neues übergeordnetes Frame
-über_Frame = Frame(root)
+über_Frame = ttk.Frame(root)
 über_Frame.pack(side=TOP, anchor=W)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
-fr = LabelFrame(über_Frame, text="Aktion")
+fr = ttk.LabelFrame(über_Frame, text="Aktion")
 fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
 
 # Visualisierungstaste erstellen
-btnVisual = Button(fr, text="Visualisierung", command=visualizeData, state=tk.DISABLED)
+btnVisual = ttk.Button(fr, text="Visualisierung", command=visualizeData, state=tk.DISABLED)
 btnVisual.grid(column=0, row=0 ,padx=5, pady=5)
 
-connButton = Button(fr, text="Tabelle", command=merge_df)
+connButton = ttk.Button(fr, text="Tabelle", command=merge_df)
 connButton.grid(column=1, row=0 ,padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # neues übergeordnetes Frame
-über_Frame = Frame(root)
+über_Frame = ttk.Frame(root)
 über_Frame.pack(side=TOP, anchor=W)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
-fr = LabelFrame(über_Frame, text="statistische Visualisierung")
+fr = ttk.LabelFrame(über_Frame, text="statistische Visualisierung")
 fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 option = IntVar()
-r1 = Radiobutton(fr, text="Streuungs-\ndiagramm", variable=option, value=1, command=enableVis)
+r1 = ttk.Radiobutton(fr, text="Streuungs-\ndiagramm", variable=option, value=1, command=enableVis)
 r1.grid(column=0, row=0, padx=5, pady=5)
-r2 = Radiobutton(fr, text="Histogram", variable=option, value=2, command=enableVis)
+r2 = ttk.Radiobutton(fr, text="Histogram", variable=option, value=2, command=enableVis)
 r2.grid(column=1, row=0, padx=5, pady=5)
-r3 = Radiobutton(fr, text="Linien-\ndiagramm", variable=option, value=3, command=enableVis)
+r3 = ttk.Radiobutton(fr, text="Linien-\ndiagramm", variable=option, value=3, command=enableVis)
 r3.grid(column=2, row=0, padx=5, pady=5)
-r4 = Radiobutton(fr, text="Balken-\ndiagramm", variable=option, value=4, command=enableVis)
+r4 = ttk.Radiobutton(fr, text="Balken-\ndiagramm", variable=option, value=4, command=enableVis)
 r4.grid(column=3, row=0, padx=5, pady=5)
-r5 = Radiobutton(fr, text="Boxplot", variable=option, value=5, command=enableVis)
+r5 = ttk.Radiobutton(fr, text="Boxplot", variable=option, value=5, command=enableVis)
 r5.grid(column=4, row=0, padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
-fr = LabelFrame(über_Frame, text="statistische Verfahren")
+fr = ttk.LabelFrame(über_Frame, text="statistische Verfahren")
 fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 ################################################################################################################################
 ################################################################################################################################ ANPASEN STATISTISCHE VERFAHREN VARIABELN AUF DIE AUSWERTUNGEN prep_stats !!!!!!
 option = IntVar()
-r6 = Radiobutton(fr, text="standart-\nabweichung", variable=option, value=6, command=enableVis)
+r6 = ttk.Radiobutton(fr, text="standart-\nabweichung", variable=option, value=6, command=enableVis)
 r6.grid(column=0, row=0, padx=5, pady=5)
-r7 = Radiobutton(fr, text="Median", variable=option, value=7, command=enableVis)
+r7 = ttk.Radiobutton(fr, text="Median", variable=option, value=7, command=enableVis)
 r7.grid(column=1, row=0, padx=5, pady=5)
-r8 = Radiobutton(fr, text="Mittel-\nwert", variable=option, value=8, command=enableVis)
+r8 = ttk.Radiobutton(fr, text="Mittel-\nwert", variable=option, value=8, command=enableVis)
 r8.grid(column=2, row=0, padx=5, pady=5)
-r9 = Radiobutton(fr, text="oberes\nQuantil", variable=option, value=9, command=enableVis)
+r9 = ttk.Radiobutton(fr, text="oberes\nQuantil", variable=option, value=9, command=enableVis)
 r9.grid(column=3, row=0, padx=5, pady=5)
-r10 = Radiobutton(fr, text="unteres\nQuantil", variable=option, value=10, command=enableVis)
+r10 = ttk.Radiobutton(fr, text="unteres\nQuantil", variable=option, value=10, command=enableVis)
 r10.grid(column=4, row=0, padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
 # neuer container für die Beenden Taste
-fr = Frame(root)
+fr = ttk.Frame(root)
 fr.pack(side=TOP, anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 # Beenden Taste erstellen
-btnQuit = Button(fr, text="Beenden", command=root.destroy)
+btnQuit = ttk.Button(fr, text="Beenden", command=root.destroy)
 btnQuit.grid()
 ##################################################################################################################################################
 ################################################################################################################################################## PROGRAMMIEREN SODASS DIE TABELLE IN EINEM NEUEN FENSTER ANGEZEIGT WIRD
 # Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat, in einem Fenster was eingebettet wird.
 #---------------------------------------------------------------------------------------------#
-frame = Frame(root)
+frame = ttk.Frame(root)
 frame.pack(fill=BOTH)
 #---------------------------------------------------------------------------------------------#
 # Starting the Tkinter application

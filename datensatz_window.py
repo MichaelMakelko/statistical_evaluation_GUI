@@ -4,63 +4,147 @@ from tkinter import messagebox
 import pandas as pd
 from pandastable import Table
 from tkcalendar import *
+import tkinter as tk
+from tkinter import ttk
 
 # importiere Module aus andere Dateien
-from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
+from prep_stats import temp_time, humi_time
 
 
 def quit(x):
     x.destroy()
 
 # funktion wird aktiviert wenn Button OK gedrückt wird
-def on_click():
-    global df2
+def on_click_temp():
+    global df_temp_gui
     # bekomme das ausgewählte column aus dem OptionMmenu
-    val = selected.get()
+    val_temp = selected_temp.get()
     #übergege den column in ein neue DataFrame
-    df2 = temp_time[f"{val}"]
-    df2 = pd.DataFrame(data=df2)
-    df2_clear = df2.dropna()
+    df_temp_gui = temp_time[f"{val_temp}"]
+    df_temp_gui = pd.DataFrame(data=df_temp_gui)
+    df2_clear = df_temp_gui.dropna()
+    buttonhumi['state'] = tk.DISABLED
+    show_tabel(df2_clear)
+    
+
+def on_cklick_humi():
+    global df_temp_humi
+    val_humi = selected_humi.get()
+    df_humi_gui = humi_time[f"{val_humi}"]
+    df_humi_gui = pd.DataFrame(data=df_humi_gui)
+    df_humi_clear = df_humi_gui.dropna()
+    buttontemp['state'] = tk.DISABLED
+    show_tabel(df_humi_clear)
+
+
+# es wird eine externe Funktion verwednet um DataFrames als Tabellen anzuzeigen
+def show_tabel(table):
+    global tabelleSens
     # neues Fenster erstellen um den ausgewählten Sensor anzuzeigen
     tabelleSens = Tk()
     tabelleSens.title("Tabelle - ausgewählter Sensor")
     #---------------------------------------------------------------------------------------------#
-    frame_tabelle_sens = Frame(tabelleSens)
+    frame_tabelle_sens = ttk.Frame(tabelleSens)
     frame_tabelle_sens.pack(fill=X, side=TOP, padx=10, pady=10)
     #---------------------------------------------------------------------------------------------#
-    pt = Table(frame_tabelle_sens, dataframe=df2_clear)
+    pt = Table(frame_tabelle_sens, dataframe=table)
     pt.show()
-    #print(df2)
+
+
+# derklarieren des zurücksetzten Taste  
+def refresh_datensatz_window():
+    buttontemp['state'] = tk.NORMAL
+    buttonhumi['state'] = tk.NORMAL
+    # Fenster des ausgewählten Zeitraums wird geschlossen
+    quit(tabelleSens)
+
 
 
 
 def open_datensatz():
-    global selected
+    global selected_temp
+    global selected_humi
+    global buttonhumi
+    global buttontemp
 
     datensatz = Tk()
     datensatz.title('Datensatz aus der Datenbank wählen')
-
+    #---------------------------------------------------------------------------------------------#
     #---------------------------------------------------------------------------------------------#
     # erstellen einen conatiner für die Info Box
-    fr = Frame(datensatz)
-    fr.pack(side=TOP, pady=10, padx=10, anchor=W)
+    über_Frame = ttk.Frame(datensatz)
+    über_Frame.pack(side=LEFT, pady=10, padx=10, anchor=W)
+    #---------------------------------------------------------------------------------------------#
+    #---------------------------------------------------------------------------------------------#
+    #---------------------------------------------------------------------------------------------#
+    fr = ttk.LabelFrame(über_Frame, text= "Datenbank Struktur")
+    fr.pack(side=TOP)
+    #---------------------------------------------------------------------------------------------#
+   
+    # Einstellungen treeview
+    treeview = ttk.Treeview(fr)
+    treeview.grid(padx=5, pady=5)
+
+    # Eltern deklarieren
+    treeview.insert("", "0", "item1", text="sa_makelko")
+    # Kinder deklarieren
+    treeview.insert("item1", "end", "item_Tables", text="Tables")
+    treeview.insert("item1", "end", "item_Views3", text="Views")
+    treeview.insert("item1", "end", "item_Stored Procedures", text="Stored Procedures")
+    treeview.insert("item1", "end", "Functions", text="Functions")
+
+    # Inserting more than one attribute of an item
+    treeview.insert('item_Tables', 'end', 'Algorithm', text ='Algorithm') 
+    treeview.insert('item_Tables', 'end', 'Data structure', text ='Data structure')
+    treeview.insert('item_Tables', 'end', '2018 paper', text ='2018 paper') 
+    treeview.insert('item_Tables', 'end', '2019 paper', text ='2019 paper')
+
+
+
+    #---------------------------------------------------------------------------------------------#
+    #---------------------------------------------------------------------------------------------#
+    # erstellen einen conatiner für die Info Box
+    über_Frame = ttk.Frame(datensatz)
+    über_Frame.pack(side=LEFT, pady=10, padx=10, anchor=W)
+    #---------------------------------------------------------------------------------------------#
+    #---------------------------------------------------------------------------------------------#
+    #---------------------------------------------------------------------------------------------#
+    fr = ttk.LabelFrame(über_Frame, text= "aufbereiteter Datensatz")
+    fr.pack(side=TOP)
     #---------------------------------------------------------------------------------------------#
     # Auswählen eines columns
     # bekomme die column Namen aus dem DataFrame
-    values = list(temp_time) 
-    selected = StringVar()
+    values_temp = list(temp_time) 
+    selected_temp = StringVar()
     # erstelln des Infotextes
-    info_optionmenu = Label(fr, text="Temperatur-\ndaten wählen")
+    info_optionmenu = ttk.Label(fr, text="Temperatur-\ndaten wählen")
     info_optionmenu.grid(column=0, row=0, padx=5, pady=5)
     # erstelle einen Button der aufrollt und alle column namen anzeigt die ausgewählt werden können
-    options = OptionMenu(fr, selected, *values)
+    options = ttk.OptionMenu(fr, selected_temp, *values_temp)
     options.grid(column=0, row=1, padx=5, pady=5)
     # Button zum auswählen des columns
-    button = Button(fr, text='Bestätigen', command=on_click)
-    button.grid(column=1, row=0, padx=5, pady=5)
+    buttontemp = ttk.Button(fr, text='Bestätigen', command=on_click_temp, state=tk.NORMAL)
+    buttontemp.grid(column=1, row=0, padx=5, pady=5)
+
+
+    values_humi = list(humi_time) 
+    selected_humi = StringVar()
+    # erstelln des Infotextes
+    info_optionmenu_h = ttk.Label(fr, text="Luftfeuchtigkeits-\ndaten wählen")
+    info_optionmenu_h.grid(column=0, row=3, padx=5, pady=5)
+    # erstelle einen Button der aufrollt und alle column namen anzeigt die ausgewählt werden können
+    options = ttk.OptionMenu(fr, selected_humi, *values_humi)
+    options.grid(column=0, row=4, padx=5, pady=5)
+    # Button zum auswählen des columns
+    buttonhumi = ttk.Button(fr, text='Bestätigen', command=on_cklick_humi, state=tk.NORMAL)
+    buttonhumi.grid(column=1, row=3, padx=5, pady=5)
     #---------------------------------------------------------------------------------------------#
-    fr = Frame(datensatz)
+    fr = ttk.LabelFrame(über_Frame, text= "Kommandos")
     fr.pack(side=TOP)
     #---------------------------------------------------------------------------------------------#
-    KalButton = Button(fr, text="Beenden", command=datensatz.destroy)
-    KalButton.grid(column=0 , row=0 , padx=5, pady=5)
+    
+    zuButton = ttk.Button(fr, text="Zurücksetzen", command=refresh_datensatz_window)
+    zuButton.grid(column=0 , row=0 , padx=5, pady=5)
+    
+    KalButton = ttk.Button(fr, text="Beenden", command=datensatz.destroy)
+    KalButton.grid(column=1 , row=0 , padx=5, pady=5)
