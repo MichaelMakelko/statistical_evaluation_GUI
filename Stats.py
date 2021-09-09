@@ -1,7 +1,4 @@
-# Author: Aman Verma
-# Description: This is a Python Desktop Application which reads the Excel and CSV datasets and
-# compute correlation and regression between the data and visualize the data using charts and plots.
-# Importing various GUI and data manipulation libraries
+
 from logging import info
 from tkinter import *
 from tkinter import messagebox
@@ -25,9 +22,6 @@ from sympy.stats import independent
 from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
 from kalender_window import open_kalender
 from datensatz_window import open_datensatz
-
-
-
 
 
 
@@ -65,8 +59,8 @@ def readFile(loc):
 
 # Enable the Visualize button when any radio button is pressed
 def enableVis():
-    if (btnVisual['state'] == tk.DISABLED):
-        btnVisual['state'] = tk.NORMAL
+    #if (btnVisual['state'] == tk.DISABLED):
+    btnVisual['state'] = tk.NORMAL
 
 
 # Funktion um die Diagramme darzustellen
@@ -96,23 +90,23 @@ def visualizeData():
 
     # Visualizing data according to the option
     if (opt == "1"):
-        # Getting the first two numeric columns for scatter plot
+        # Streuungsdiagramm
         x = data[numericCols[0]].tolist()
         y = data[numericCols[1]].tolist()
         plot.scatter(x, y)
         plot.xlabel(numericCols[0])
         plot.ylabel(numericCols[1])
-        plot.title('Scatter Plot')
+        plot.title('Streuungsdiagramm')
         plot.show()
     elif (opt == "2"):
-        # The first numeric column is plotted in histogram
+        # Histogramm
         x = data[numericCols[0]].tolist()
         plot.hist(x, stacked=False)
         plot.xlabel(numericCols[0])
         plot.title('Histogram')
         plot.show()
     elif (opt == "3"):
-        # Getting the first two numeric columns for line plot and sorting the data before plotting
+        # Liniendiagramm
         data.sort_values(by=[numericCols[0], numericCols[1]], inplace=True)
         x = data[numericCols[0]].tolist()
         y = data[numericCols[1]].tolist()
@@ -122,7 +116,7 @@ def visualizeData():
         plot.title('Line Plot')
         plot.show()
     elif (opt == "4"):
-        # Getting the first two numeric columns for bar chart
+        # Balkendiagramm
         x = data[numericCols[0]].tolist()
         y = data[numericCols[1]].tolist()
         plot.bar(x, y, width=0.2)
@@ -131,7 +125,7 @@ def visualizeData():
         plot.title('Bar Chart')
         plot.show()
     elif (opt == "5"):
-        # The first numeric column is used as label and second numeric column is used in the chart
+        # Boxplot
         x = data[numericCols[0]].tolist()
         y = data[numericCols[1]].tolist()
         plot.pie(y, labels=x)
@@ -144,9 +138,10 @@ def visualizeData():
 def merge_df():
     # df_date (das ausgewählte datum als DataFrame) erst in der Funktion importieren wenn es benötigt wird!
     from kalender_window import df_date
-    from datensatz_window import df_temp_gui
+    from datensatz_window import df_gui
+    global merged_df
 
-    merged_df = pd.merge(df_date, df_temp_gui , left_index=True, right_index=True)
+    merged_df = pd.merge(df_date, df_gui , left_index=True, right_index=True)
     merged_df = merged_df.dropna()
 
     # neues Fenster erstellen um die ausgewählten Sensor Tabelle anzuzeigen
@@ -160,18 +155,61 @@ def merge_df():
     pt.show()
 
 
+#######################################################################################################################
+#######################################################################################################################
+def VisualDown():
+    from prep_stats import visual_method_dynamic
+    from datensatz_window import df_gui, stringChoosen
+    #from kalender_window import a
+    a = 2
+    opt = str(option.get()) # ausgewählte Visualisierungsmethode
+    data = merged_df # DataFrame
+    print("IN DER FUNKTION")
+        # Visualizing data according to the option
+    if (opt == "1"):
+        # Streuungsdiagramm
+        visual_method_dynamic(1,"Temperatur",data, a, stringChoosen)
+    elif (opt == "2"):
+        # Histogramm
+        visual_method_dynamic(4,"Temperatur",data, a, stringChoosen)
+    elif (opt == "3"):
+        print("IN DER IF ABFRAGE")
+        # Liniendiagramm
+        visual_method_dynamic(2,"Temperatur",data, a, stringChoosen)########## DIESER WEG FUNKTIONEN ANDERE FUNKTIONEN ANPASSEN !!!!
+        plot.show()
+##########################################################################################################################################
+####################################################################################################################### xxxxx   
+
+    # elif (opt == "4"):
+    #     # Balkendiagramm
+    #     visual_method_dynamic(4,)
+
+    elif (opt == "5"):
+        # Boxplot
+        visual_method_dynamic(3,"Temperatur",data, a, stringChoosen)
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Beginn der Haupt-GUI
 # GUI-Widgets einrichten
 root = Tk()
-
 # Titelname des Fensters
 root.title("static_py")
-
 # einstellen der Fenstergröße / wenn nicht angegeben wird das Fenster jeweils angepasst
 #root.minsize(600, 600)
 #root.maxsize(600, 600)
-
 #---------------------------------------------------------------------------------------------#
 # erstellen eines Containers für den Titel des Programms
 topFrame = Frame(root, width=1350, height=50,bd=4, relief="ridge")# mit bd=4 und relief="ridge" Umrandung des Titels erstellt 
@@ -223,22 +261,32 @@ fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 
 fr2 = ttk.Frame(fr)
-fr2.pack(side=TOP,anchor=SW, padx=5, pady=5)
+fr2.pack(side=TOP,anchor=E, padx=5, pady=5)
 
 checkDate = ttk.Label(fr2, text="Zeitraum:")
 checkDate.pack(side=LEFT)
 
-box_date = Label(fr2, bg="red")
-box_date.pack(side=LEFT)
+#CheckVarDate=BooleanVar()
+checkbuttondate= ttk.Checkbutton(fr2)
+checkbuttondate.pack(side=LEFT)
+
+# box_date = Entry(fr2, width=2)
+# box_date.configure({"background": "red"})
+# box_date.pack(side=LEFT)
 
 fr2 = ttk.Frame(fr)
-fr2.pack(side=TOP,anchor=SW, padx=5, pady=5)
+fr2.pack(side=TOP,anchor=E, padx=5, pady=5)
 
 checkData = ttk.Label(fr2, text="Datensatz:")
 checkData.pack(side=LEFT)
 
-box_data = Label(fr2, bg="red")
-box_data.pack(side=LEFT)
+CheckVarData=BooleanVar()
+checkbuttondata= ttk.Checkbutton(fr2)
+checkbuttondata.pack(side=LEFT)
+
+# box_data = Entry(fr2, width=2)
+# box_data.configure({"background": "red"})
+# box_data.pack(side=LEFT)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # neues übergeordnetes Frame
@@ -249,11 +297,11 @@ box_data.pack(side=LEFT)
 fr = ttk.LabelFrame(über_Frame, text="Aktion")
 fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
 
-# Visualisierungstaste erstellen
-btnVisual = ttk.Button(fr, text="Visualisierung", command=visualizeData, state=tk.DISABLED)
+# Visualisierungstaste erstellen                                                            #####################################################
+btnVisual = ttk.Button(fr, text="Visualisierung", command=VisualDown, state=tk.DISABLED) ############################################################ BEI COMMAND WIEDER VISUALIZEDATA 
 btnVisual.grid(column=0, row=0 ,padx=5, pady=5)
 
-connButton = ttk.Button(fr, text="Tabelle", command=merge_df)
+connButton = ttk.Button(fr, text="Tabellen\nzusammenfügen", command=merge_df)
 connButton.grid(column=1, row=0 ,padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
@@ -265,6 +313,8 @@ connButton.grid(column=1, row=0 ,padx=5, pady=5)
 fr = ttk.LabelFrame(über_Frame, text="statistische Visualisierung")
 fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
+# wird ein Radiobutton angegklickt wird in option der Value-Wert von dem gedrückten RadioButon abgespeichert
+# Zusätzlich wird der Visualisierungsbuttton durch den command vom Radiobutton aktiviert
 option = IntVar()
 r1 = ttk.Radiobutton(fr, text="Streuungs-\ndiagramm", variable=option, value=1, command=enableVis)
 r1.grid(column=0, row=0, padx=5, pady=5)
@@ -282,16 +332,16 @@ fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 ################################################################################################################################
 ################################################################################################################################ ANPASEN STATISTISCHE VERFAHREN VARIABELN AUF DIE AUSWERTUNGEN prep_stats !!!!!!
-option = IntVar()
-r6 = ttk.Radiobutton(fr, text="standart-\nabweichung", variable=option, value=6, command=enableVis)
+optionStat = IntVar()
+r6 = ttk.Radiobutton(fr, text="standart-\nabweichung", variable=optionStat, value=1)
 r6.grid(column=0, row=0, padx=5, pady=5)
-r7 = ttk.Radiobutton(fr, text="Median", variable=option, value=7, command=enableVis)
+r7 = ttk.Radiobutton(fr, text="Median", variable=optionStat, value=2)
 r7.grid(column=1, row=0, padx=5, pady=5)
-r8 = ttk.Radiobutton(fr, text="Mittel-\nwert", variable=option, value=8, command=enableVis)
+r8 = ttk.Radiobutton(fr, text="Mittel-\nwert", variable=optionStat, value=3)
 r8.grid(column=2, row=0, padx=5, pady=5)
-r9 = ttk.Radiobutton(fr, text="oberes\nQuantil", variable=option, value=9, command=enableVis)
+r9 = ttk.Radiobutton(fr, text="oberes\nQuantil", variable=optionStat, value=4)
 r9.grid(column=3, row=0, padx=5, pady=5)
-r10 = ttk.Radiobutton(fr, text="unteres\nQuantil", variable=option, value=10, command=enableVis)
+r10 = ttk.Radiobutton(fr, text="unteres\nQuantil", variable=optionStat, value=5)
 r10.grid(column=4, row=0, padx=5, pady=5)
 #---------------------------------------------------------------------------------------------#
 # neuer container für die Beenden Taste

@@ -10,29 +10,37 @@ from tkinter import ttk
 # importiere Module aus andere Dateien
 from prep_stats import temp_time, humi_time
 
-
 def quit(x):
     x.destroy()
 
 # funktion wird aktiviert wenn Button OK gedrückt wird
 def on_click_temp():
-    global df_temp_gui
+    # varibale muss global deklariert werden damit Sie in einer anderen Datei importiert werden kann
+    global df_gui
+    global stringChoosen
+    # setzen des Hackens im Menü Fenster
+    #CheckVarData.set(True)
     # bekomme das ausgewählte column aus dem OptionMmenu
     val_temp = selected_temp.get()
+    stringChoosen = val_temp
     #übergege den column in ein neue DataFrame
-    df_temp_gui = temp_time[f"{val_temp}"]
-    df_temp_gui = pd.DataFrame(data=df_temp_gui)
-    df2_clear = df_temp_gui.dropna()
+    df_gui = temp_time[f"{val_temp}"]
+    df_gui = pd.DataFrame(data=df_gui)
+    df2_clear = df_gui.dropna()
     buttonhumi['state'] = tk.DISABLED
     show_tabel(df2_clear)
-    
 
 def on_cklick_humi():
-    global df_temp_humi
+    # varibale muss global deklariert werden damit Sie in einer anderen Datei importiert werden kann
+    global df_gui
+    global stringChoosen
+    # setzen des Hackens im Menü Fenster
+    #CheckVarData.set(True)
     val_humi = selected_humi.get()
-    df_humi_gui = humi_time[f"{val_humi}"]
-    df_humi_gui = pd.DataFrame(data=df_humi_gui)
-    df_humi_clear = df_humi_gui.dropna()
+    stringChoosen = val_humi
+    df_gui = humi_time[f"{val_humi}"]
+    df_gui = pd.DataFrame(data=df_gui)
+    df_humi_clear = df_gui.dropna()
     buttontemp['state'] = tk.DISABLED
     show_tabel(df_humi_clear)
 
@@ -55,6 +63,9 @@ def show_tabel(table):
 def refresh_datensatz_window():
     buttontemp['state'] = tk.NORMAL
     buttonhumi['state'] = tk.NORMAL
+    # entfernen des Hackens im Menü Fenster
+    #CheckVarData.set(False)
+    # setze den Status zurück wenn Zurücksetzten betätigt wurde
     # Fenster des ausgewählten Zeitraums wird geschlossen
     quit(tabelleSens)
 

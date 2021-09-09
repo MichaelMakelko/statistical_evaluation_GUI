@@ -1,3 +1,4 @@
+
 from tkinter import *
 from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
 from tkinter import messagebox
@@ -6,9 +7,6 @@ from pandastable import Table
 from tkcalendar import *
 import tkinter as tk
 from tkinter import ttk
-
-
-
 
 # erstes Datum für den Zeitruam wählen
 def grab_date_first():
@@ -51,8 +49,11 @@ def grab_date_last():
 def df_filter_date():
     global tabelle
     global df_date
+    # setzen des hackens im Menu Fenster
+    #CheckVarDate.set(True)
     df_date = choose_date_gui(saveFirstDate, saveLastDate)
     print(df_date)
+    # setze einen Haken im Menu Fenster 
 
     # neues Fenster erstellen um den ausgewählten Zeitraum anzuzeugen
     tabelle = Tk()
@@ -65,10 +66,13 @@ def df_filter_date():
     pt.show()
 
 
+
 # derklarieren des zurücksetzten Taste  
 def refresh_date_border_label():
     label_first_date.config(text="")
     label_last_date.config(text="")
+    # Entfernen des Hackens in dem Menu Fenster
+    #CheckVarDate.set(False)
     # Fenster des ausgewählten Zeitraums wird geschlossen
     quit(tabelle)
 

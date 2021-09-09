@@ -7,7 +7,7 @@ from statistics import stdev # beinhaltet einige statistische Berrechnungs Mögl
 from datetime import datetime as dt  
 
 ## Darstellungs Bibliotheken
-import matplotlib.pyplot as plt, matplotlib.font_manager as fm # Visualisierungs Bibliothek
+#import matplotlib.pyplot as plt, matplotlib.font_manager as fm # Visualisierungs Bibliothek
 import seaborn as sns # verbesserte Visualisierungs Bibliothek 
 import matplotlib.dates as mdates # um verschiedene Achsenbeschriftungen/Achsenwerte vornehmen zu können
 
@@ -407,48 +407,43 @@ def startEnd_df():
     print("erster und letzter aufgenommene Messwert der Luftfeuchtigkeitsdaten:")
     print(firstLast_humi_df["longtime"])
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-def statistic_funcion_dynamic(choosen_merged, save_string):
+def statistic_funcion_dynamic(optionStat, merged_df):
     # benötigt das importieren der Bibliotheken die in dieser Funktion Verwendung finden 
-    import numpy as np
-    import pandas as pd
-    
-    # alle NaN-Werte aus dem DataFrame entfernen da sonst das Ergebniss verfälscht wird
-    choosen_merged = choosen_merged.dropna()
     # eingabe welches statistische Verfahren angewendet werden soll
-    x = input("waehlen Sie ein statistisches Verfahren: \n 1. ahritmetischer Mittelwert \n 2. Standartabweichung \n 3. Median \n 4. unteres Quantil\n 5. oberes Quantil \n 6. Tabelle mit allen Methoden \n Geben Sie die Nummer der Methode ein \n bestaetigen Sie mit Enter\n ")
+    #x = input("waehlen Sie ein statistisches Verfahren: \n 1. ahritmetischer Mittelwert \n 2. Standartabweichung \n 3. Median \n 4. unteres Quantil\n 5. oberes Quantil \n 6. Tabelle mit allen Methoden \n Geben Sie die Nummer der Methode ein \n bestaetigen Sie mit Enter\n ")
     
     # aufgrund des DataFrames müssen wir auch das column ansprechen da es kein sauberes Series ist
-    if x == "1":
-        ergebnis = np.mean(choosen_merged[f"{save_string}"])
+    if optionStat == "3":
+        ergebnis = np.mean(merged_df[f"{save_string}"])
         print("Der ahrithmetische mittelwert ist:", ergebnis)
         return (ergebnis)
     
-    if x == "2":
-        ergebnis = np.std(choosen_merged[f"{save_string}"])
+    if optionStat == "1":
+        ergebnis = np.std(merged_df[f"{save_string}"])
         print("Die Standartabweichung ist:", ergebnis)
         return (ergebnis)
     
-    if x == "3":
-        ergebnis = np.median(choosen_merged[f"{save_string}"])
+    if optionStat == "2":
+        ergebnis = np.median(merged_df[f"{save_string}"])
         print("Der Median ist:", ergebnis)
         return (ergebnis)
     
-    if x == "4":
-        ergebnis = np.quantile(choosen_merged[f"{save_string}"], 0.25)
+    if optionStat == "5":
+        ergebnis = np.quantile(merged_df[f"{save_string}"], 0.25)
         print("Das untere Quantil ist:", ergebnis)
         return(ergebnis)
     
-    if x == "5":
-        ergebnis = np.quantile(choosen_merged[f"{save_string}"], 0.75)
+    if optionStat == "4":
+        ergebnis = np.quantile(merged_df[f"{save_string}"], 0.75)
         print("Das obere Quantil ist:", ergebnis)
         return(ergebnis)
     
-    if x == "6":
-        ergebnis1 = np.quantile(choosen_merged[f"{save_string}"], 0.25)
-        ergebnis2 = np.median(choosen_merged[f"{save_string}"])
-        ergebnis3 = np.std(choosen_merged[f"{save_string}"])
-        ergebnis4 = np.mean(choosen_merged[f"{save_string}"])
-        ergebnis5 = np.quantile(choosen_merged[f"{save_string}"], 0.75)
+    if optionStat == "6":
+        ergebnis1 = np.quantile(merged_df[f"{save_string}"], 0.25)
+        ergebnis2 = np.median(merged_df[f"{save_string}"])
+        ergebnis3 = np.std(merged_df[f"{save_string}"])
+        ergebnis4 = np.mean(merged_df[f"{save_string}"])
+        ergebnis5 = np.quantile(merged_df[f"{save_string}"], 0.75)
         
         
         df= pd.DataFrame({"Statistische Verfahren" : ["Median","Standartabweichung","ahrithmetischer Mittelwert","oberes Quantil", "unteres Quantil"], "Ergebniss" : [ergebnis2, ergebnis3, ergebnis4, ergebnis5, ergebnis1]})
@@ -693,109 +688,102 @@ def find_datagap(choosen_merged):
 # Visualisierung
 # matplotlib.font_manager from https://github.com/gboeing/data-visualization/blob/main/lastfm-listening-history/lastfm_analysis.ipynb
 # Einstellung für die Darstellung des plots
-family = 'DejaVu Sans'
-label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
-title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
-
+##################################################################################################################################
+#family = 'DejaVu Sans'
+#label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
+#title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
+#######################################################################################################################################EINBETTEN
 #visual_method_dynamic() gibt zurück:
 # - plot
 #     - X-Achse beinhaltet das ausgewählte Datum oder Bereich
 #     - Y-Achse beinhaltet den ausgewählten Sensor
 # - es kann zwischen 4 Diagrammen ausgewählt werden
 
-def visual_method_dynamic(pickd_column_df , a, choosen_merged, input_a):
-    # abfrage welche Daten wurden in pick_DataFrame() ausgewählt  
+def visual_method_dynamic(x , a, choosen_merged, input_a, save_string):
+    import matplotlib.pyplot as plt, matplotlib.font_manager as fm
+
+    family = 'DejaVu Sans'
+    label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
+    title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
+
+    #abfrage welche Daten wurden in pick_DataFrame() ausgewählt  
     if a == "Luftfeuchtigkeit":
         # speichere den string ab -> title
         text = "Luftfeuchtigkeit"
-        
     if a == "Temperatur":
         # speichere den string ab -> title
         text = "Temperatur"
+    
 
     # eingabe welches Visualisierungsmethode angezeigt werden soll
-    x = input("Wählen Sie die Visualisierungs Methode: \n 1. Streuungsdiagramm \n 2. Liniendiagramm \n 3. Boxplot \n 4. Histogramm \n Geben Sie die Nummer der zu wählenden Mehtode ein und bestätigen SIe mit Enter \n ")
-
-#"""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""
-    # bleibe in der Schleife solange eins der Visualisierungsmethoden ausgewählt wurde
-    while x != "1" or "2" or "3" or "4":
+    #x = input("Wählen Sie die Visualisierungs Methode: \n 1. Streuungsdiagramm \n 2. Liniendiagramm \n 3. Boxplot \n 4. Histogramm \n Geben Sie die Nummer der zu wählenden Mehtode ein und bestätigen SIe mit Enter \n ")
         
-        # START Einstellungen für das Streuungsdiagramm
-        if x == "1":
-            
-            ax = choosen_merged.plot(x ="longtime" , y=save_string , kind="scatter" ,figsize=[15, 5], linewidth=0.1, alpha=0.6, color="#003399")
-            ax.yaxis.grid(True)
-            # falls nötig ein Limit für die y-achse zu setzten
-            #ax.set_ylim((0,50))
-            # Einstellungen für die Achsenbeschriftung
-            ax.set_ylabel(text, fontproperties = label_font)
-            
-            # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
-            if input_a == "1":
-                timeFmt = mdates.DateFormatter('%H:%M:%S')
-                ax.xaxis.set_major_formatter(timeFmt)
-                plt.xticks(rotation=45)
-                ax.set_xlabel("Stunden", fontproperties = label_font)
-                ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm "+df_date, fontproperties=title_font)
-            else:
-                ax.set_xlabel("Datum", fontproperties = label_font)
-                ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
-            
-            # einsetzen der Jahre (min and max)
-            # sowie Einstellungen für die Achsenbeschriftung
-            
-            plt.show()
-            break
+    # START Einstellungen für das Streuungsdiagramm
+    if x == 1:
+        
+        ax = choosen_merged.plot(x ="longtime" , y=save_string , kind="scatter" ,figsize=[15, 5], linewidth=0.1, alpha=0.6, color="#003399")
+        ax.yaxis.grid(True)
+        # falls nötig ein Limit für die y-achse zu setzten
+        #ax.set_ylim((0,50))
+        # Einstellungen für die Achsenbeschriftung
+        ax.set_ylabel(text, fontproperties = label_font)
+        
+        # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
+        if input_a == "1":
+            timeFmt = mdates.DateFormatter('%H:%M:%S')
+            ax.xaxis.set_major_formatter(timeFmt)
+            plt.xticks(rotation=45)
+            ax.set_xlabel("Stunden", fontproperties = label_font)#########################################################################################################
+            ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm "+"df_date", fontproperties=title_font) #####################################################  EINFÜGE DES DATUMS
+        else:
+            ax.set_xlabel("Datum", fontproperties = label_font)
+            #ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
+        plt.show()
+        # einsetzen der Jahre (min and max)
+        # sowie Einstellungen für die Achsenbeschriftung
 #"""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""            
-        # START Einstellungen für das Liniendiagramm
-        if x == "2":
-            # das Liniendiagramm kann nur angezeigt werden wenn in dem Dataframe keine NaN-Werte vorhanden sind
-            drop_na = choosen_merged.dropna()
-            
-            ax = drop_na.plot(x ="longtime", y=save_string, kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
-            ax.yaxis.grid(True)
-            #ax.set_ylim((0,50))
-            ax.set_ylabel(text, fontproperties = label_font)
-            if input_a == "1":
-                # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
-                # setzt aus dem column "longtime" (UTC) unten folgende Syntax / rausgenommen wird stunde/minute/sekunde aus dem gesamten Datum/Uhrzeit
-                timeFmt = mdates.DateFormatter('%H:%M:%S')
-                ax.xaxis.set_major_formatter(timeFmt)
-                # Achsenbeschriftung um 45 grad drehen
-                plt.xticks(rotation=45)
-                # Den Tag als titel für die x-achse angeben
-                ax.set_xlabel("Stunden", fontproperties = label_font)
-                # ausgewählten Tag für den Titel verwenden
-                ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm "+df_date, fontproperties=title_font)
-            else:
-                ax.set_xlabel("Datum", fontproperties = label_font)
-                ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
-            
-            plt.show()
-            break
+    # START Einstellungen für das Liniendiagramm
+    if x == 2:
+        # das Liniendiagramm kann nur angezeigt werden wenn in dem Dataframe keine NaN-Werte vorhanden sind
+        drop_na = choosen_merged.dropna()
+        print("IN DER ANDEREN DATEI")
+        
+        ax = drop_na.plot(x ="longtime", y=save_string, kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
+        ax.yaxis.grid(True)
+        #ax.set_ylim((0,50))
+        ax.set_ylabel(text, fontproperties = label_font)
+        if input_a == "1":
+            # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
+            # setzt aus dem column "longtime" (UTC) unten folgende Syntax / rausgenommen wird stunde/minute/sekunde aus dem gesamten Datum/Uhrzeit
+            timeFmt = mdates.DateFormatter('%H:%M:%S')
+            ax.xaxis.set_major_formatter(timeFmt)
+            # Achsenbeschriftung um 45 grad drehen
+            plt.xticks(rotation=45)
+            # Den Tag als titel für die x-achse angeben
+            ax.set_xlabel("Stunden", fontproperties = label_font)
+            # ausgewählten Tag für den Titel verwenden
+            ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm "+"df_date", fontproperties=title_font)##########################################################################df_date einbetten wieder
+        else:
+            ax.set_xlabel("Datum", fontproperties = label_font)
+            #ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
+        plt.show()
                 
 #"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""            
         # START Einstellungen für das Boxplot
-        if x == "3":
-            
+        if x == 3:
             print("Boxplot vom ",text ,"-Sensor:", pick_column)
             # plot Settings
             ax = choosen_merged.boxplot()
             ax.set_title(f"{text}"+" Sensor: "+f"{pick_column}")
             #ax.set_xlabel("x_label")
             ax.set_ylabel(f"{text}")
-            break
-#"""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""             
+#"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""             
         # START Einstellungen für das Histogramm   
-        if x == "4":
+        if x == 4:
             print("Histogramm vom ",text ,"-Sensor:", pick_column)
             hist = choosen_merged.hist(column=f"{save_string}")
-            break
-            
-        # falls die eingabe keine 1-4 war wird der input nicht angenommen und wiederholt
         else:
             print("Die Eingabe ist ungültig!")
-            break
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # main
