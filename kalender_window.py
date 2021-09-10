@@ -49,11 +49,30 @@ def grab_date_last():
 def df_filter_date():
     global tabelle
     global df_date
+    global a
+    global save_day
+    global save_date_start
+    global save_date_end
     # setzen des hackens im Menu Fenster
     #CheckVarDate.set(True)
     df_date = choose_date_gui(saveFirstDate, saveLastDate)
     print(df_date)
-    # setze einen Haken im Menu Fenster 
+
+    # deklarieren einer variable die den Tag widergibt wenn der Zeitraum nur als Tag gewählt wurde
+    save_day = saveFirstDate
+    # deklarieren der Variablen wenn ein Zeitraum ausgewählt wurde
+    save_date_start = saveFirstDate
+    save_date_end = saveLastDate
+
+    # Prüfen ob ein Tag oder ein Zeitraum gewählt wurde.
+    if saveLastDate - saveFirstDate < pd.Timedelta("1 day"):
+        # differenz ist kleiner als ein Tag = Tag
+        a = 1
+    
+    else:
+        # differenz ist größre als ein Tag = Zeitraum
+        a = 2
+
 
     # neues Fenster erstellen um den ausgewählten Zeitraum anzuzeugen
     tabelle = Tk()

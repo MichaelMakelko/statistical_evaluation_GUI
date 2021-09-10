@@ -313,84 +313,91 @@ def showAllHumi(humi_time, humi_value):
 # 2. shows the DataFrame of the set / chose wich DataSet you want from the Sensors
 # 3. safes the DataFrame in new working DataFrame
 
-def pick_DataFrame():
-    #global safeDataFrame
+# WIRD NICHT VERWENDET AUFGRUND DES COLUMN
+#############################################################################################################################################################################################
+#############################################################################################################################################################################################
+# def pick_DataFrame():
+#     #global safeDataFrame
     
-    # initialisiere globale variablen
-    global pickd_column_df
-    global a
-    global pick_column
-    global save_string
-    # x a muss vorher angesprochen werden
-    x = int
+#     # initialisiere globale variablen
+#     global pickd_column_df
+#     global a
+#     global pick_column
+#     global save_string
+#     # x a muss vorher angesprochen werden
+#     x = int
     
-    # solange 1 oder 2 nicht eingegeben wird, wird der input() wiederholt
-    while x != "1" or "2":
-        # eingabe der zu analisiernenden Tabelle Temperatur(1) oder Luftfeuchtigkeit(2)
-        x = input("wählen Sie zwischen Temperatur- oder Luftfeuchtigkeitsdaten \n geben Sie (1) für Temperaturdaten ein \n geben Sie (2) für Luftfeuchtigkeitsdaten ein \n bestätigen Sie Ihre eingabe mit Enter \n")
+#     # solange 1 oder 2 nicht eingegeben wird, wird der input() wiederholt
+#     while x != "1" or "2":
+#         # eingabe der zu analisiernenden Tabelle Temperatur(1) oder Luftfeuchtigkeit(2)
+#         x = input("wählen Sie zwischen Temperatur- oder Luftfeuchtigkeitsdaten \n geben Sie (1) für Temperaturdaten ein \n geben Sie (2) für Luftfeuchtigkeitsdaten ein \n bestätigen Sie Ihre eingabe mit Enter \n")
         
-        # abfrage der Eingabe
-        # Übergabe der variablen der ausgewählten liste
-        if x == "1":
-            # abspeichern der Liste mit allen Temperatur Sensoren 
-            safeDataFrame = temp_df_list
-            # string für das ausgewählte Temperatur Dataframe
-            a = "Temperatur"
-            var = df_temp_value
-            print("Die ausgewählte Kategorie der Daten ist Temperatur")
-            print("Es werden alle Temperatur-Sensoren aus der Datenbank aufgelistet:")
-            # sens_counter zählt die vorhandenen Sensoren in der Datenbank
-            sens_counter = 0
-            # schleife um die columns in temp_value zu zählen
-            for i in temp_value.columns:
-                sens_counter += 1
-                print(i) 
-            break
+#         # abfrage der Eingabe
+#         # Übergabe der variablen der ausgewählten liste
+#         if x == "1":
+#             # abspeichern der Liste mit allen Temperatur Sensoren 
+#             safeDataFrame = temp_df_list
+#             # string für das ausgewählte Temperatur Dataframe
+#             a = "Temperatur"
+#             var = df_temp_value
+#             print("Die ausgewählte Kategorie der Daten ist Temperatur")
+#             print("Es werden alle Temperatur-Sensoren aus der Datenbank aufgelistet:")
+#             # sens_counter zählt die vorhandenen Sensoren in der Datenbank
+#             sens_counter = 0
+#             # schleife um die columns in temp_value zu zählen
+#             for i in temp_value.columns:
+#                 sens_counter += 1
+#                 print(i) 
+#             break
         
-        # gleiche Erklärung für die Luftfeuchtigkeit
-        if x == "2":
-            a = "Luftfeuchtigkeit"
-            safeDataFrame = humi_df_list
-            var = df_humi_value
-            print("Die ausgewählte Kategorie der Daten ist Luftfeuchtigkeit")
-            print("Es werden alle Luftfeuchtigkeits-Sensoren aus der Datenbank aufgelistet:")
-            sens_counter = 0
-            for i in humi_value.columns:
-                sens_counter += 1
-                print(i)
-            break
+#         # gleiche Erklärung für die Luftfeuchtigkeit
+#         if x == "2":
+#             a = "Luftfeuchtigkeit"
+#             safeDataFrame = humi_df_list
+#             var = df_humi_value
+#             print("Die ausgewählte Kategorie der Daten ist Luftfeuchtigkeit")
+#             print("Es werden alle Luftfeuchtigkeits-Sensoren aus der Datenbank aufgelistet:")
+#             sens_counter = 0
+#             for i in humi_value.columns:
+#                 sens_counter += 1
+#                 print(i)
+#             break
         
-        # falls die eingabe nicht 1 oder 2 war ist die eingabe ungültig
-        else:
-            print("Die eingabe ist unzulässig")
+#         # falls die eingabe nicht 1 oder 2 war ist die eingabe ungültig
+#         else:
+#             print("Die eingabe ist unzulässig")
             
                     
-    # abfrage welcher Sensor ausgewählt werden soll
-    pick_column = input(("Sie können zwischen "+f"{sens_counter} "+ a +" Sensoren einen Datensatz wählen \n gebe Sie nur die Nummer des Sensors ein und bestätigen Sie mit Enter \n"))
+#     # abfrage welcher Sensor ausgewählt werden soll
+#     pick_column = input(("Sie können zwischen "+f"{sens_counter} "+ a +" Sensoren einen Datensatz wählen \n gebe Sie nur die Nummer des Sensors ein und bestätigen Sie mit Enter \n"))
     
     
-#     # auf die Sensoren Begrenzen die vorhanden sind
-#     flag_sens= False
-#     while flag_sens != True:
-#         pick_colum = input("Geben Sie die Nummer des Sensors erneut ein \n")
+# #     # auf die Sensoren Begrenzen die vorhanden sind
+# #     flag_sens= False
+# #     while flag_sens != True:
+# #         pick_colum = input("Geben Sie die Nummer des Sensors erneut ein \n")
         
-#         if pick_column > sens_counter or pick_column < sens_counter:
-#             flag_sens = False
-#         else:
-#             print("Dieser Sensor existiert nicht")
-#             flag_sens = True
+# #         if pick_column > sens_counter or pick_column < sens_counter:
+# #             flag_sens = False
+# #         else:
+# #             print("Dieser Sensor existiert nicht")
+# #             flag_sens = True
     
     
     
     
-    # dementsprechend wird dieses column ausgewählt
-    pickd_column_df = var.filter(like="_"+f"{pick_column}"+"_", axis=1)
-    # ausgabe des Sensors
-    print("Sie haben folgende Tabelle ausgewählt: \n", pickd_column_df)
-    # folgende Schleife dient zum abspeichern des column namens für weitere Funktionen / falls eine bessere Möglichkeit gefunden wird den Namen abzuspeichern wird die Funktion ersetzt
-    for i in pickd_column_df:
-        x = i
-        save_string = f"{x}"
+#     # dementsprechend wird dieses column ausgewählt
+#     pickd_column_df = var.filter(like="_"+f"{pick_column}"+"_", axis=1)
+#     # ausgabe des Sensors
+#     print("Sie haben folgende Tabelle ausgewählt: \n", pickd_column_df)
+#     # folgende Schleife dient zum abspeichern des column namens für weitere Funktionen / falls eine bessere Möglichkeit gefunden wird den Namen abzuspeichern wird die Funktion ersetzt
+#     for i in pickd_column_df:
+#         x = i
+#         save_string = f"{x}"
+
+
+#############################################################################################################################################################################################
+#############################################################################################################################################################################################
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # speichert das erste und letzte Datum als DataFrame ab für die Funktion sartEnd_df()
@@ -407,7 +414,7 @@ def startEnd_df():
     print("erster und letzter aufgenommene Messwert der Luftfeuchtigkeitsdaten:")
     print(firstLast_humi_df["longtime"])
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-def statistic_funcion_dynamic(optionStat, merged_df):
+def statistic_funcion_dynamic(optionStat, merged_df, save_string):
     # benötigt das importieren der Bibliotheken die in dieser Funktion Verwendung finden 
     # eingabe welches statistische Verfahren angewendet werden soll
     #x = input("waehlen Sie ein statistisches Verfahren: \n 1. ahritmetischer Mittelwert \n 2. Standartabweichung \n 3. Median \n 4. unteres Quantil\n 5. oberes Quantil \n 6. Tabelle mit allen Methoden \n Geben Sie die Nummer der Methode ein \n bestaetigen Sie mit Enter\n ")
@@ -642,11 +649,10 @@ def commpare_date_input(compare_value):
     
     else:
         print("das Datum ist nicht zulässig!")
-
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 ## Funktion: Datenlücke finden / prüfen ob es sich wirklich um eine Datenlücke handelt
 # Funktion die alle Daten des Sensors durchläuft und erwähnt in welchem die größte Datenlücke herrscht
-
-def find_datagap(choosen_merged):
+def find_datagap(choosen_merged, save_string):
     # Folgende Funktion wirft den Dataframe aus und ersetzt in NaN die Länge der aufeinanderfolgenden NaN bis zum nächsten Wert / Datenwerte werden in 0 repräsentiert
     streaks = choosen_merged[f"{save_string}"].isnull().groupby(choosen_merged[f"{save_string}"].isnull().ne(choosen_merged[f"{save_string}"].isnull().shift()).cumsum()).transform(sum)
     # indices enthält die größten aufeinanderfolgenden NaN-Indizes (Anfang-Ende) der Gruppe
@@ -684,39 +690,23 @@ def find_datagap(choosen_merged):
     if df_b[longest_na_gap] > 1:
         print("keine Datenlücke gefunden")
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-# Visualisierung
-# matplotlib.font_manager from https://github.com/gboeing/data-visualization/blob/main/lastfm-listening-history/lastfm_analysis.ipynb
-# Einstellung für die Darstellung des plots
-##################################################################################################################################
-#family = 'DejaVu Sans'
-#label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
-#title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
-#######################################################################################################################################EINBETTEN
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #visual_method_dynamic() gibt zurück:
 # - plot
 #     - X-Achse beinhaltet das ausgewählte Datum oder Bereich
 #     - Y-Achse beinhaltet den ausgewählten Sensor
 # - es kann zwischen 4 Diagrammen ausgewählt werden
-
-def visual_method_dynamic(x , a, choosen_merged, input_a, save_string):
+def visual_method_dynamic(x , a_string, choosen_merged, a_int, save_string, pick_column, df_date, input_beginn, input_end):
     import matplotlib.pyplot as plt, matplotlib.font_manager as fm
 
+    # Visualisierung
+    # matplotlib.font_manager from https://github.com/gboeing/data-visualization/blob/main/lastfm-listening-history/lastfm_analysis.ipynb
+    # Einstellung für die Darstellung des plots
     family = 'DejaVu Sans'
     label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
     title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
-
-    #abfrage welche Daten wurden in pick_DataFrame() ausgewählt  
-    if a == "Luftfeuchtigkeit":
-        # speichere den string ab -> title
-        text = "Luftfeuchtigkeit"
-    if a == "Temperatur":
-        # speichere den string ab -> title
-        text = "Temperatur"
     
-
-    # eingabe welches Visualisierungsmethode angezeigt werden soll
-    #x = input("Wählen Sie die Visualisierungs Methode: \n 1. Streuungsdiagramm \n 2. Liniendiagramm \n 3. Boxplot \n 4. Histogramm \n Geben Sie die Nummer der zu wählenden Mehtode ein und bestätigen SIe mit Enter \n ")
         
     # START Einstellungen für das Streuungsdiagramm
     if x == 1:
@@ -726,18 +716,18 @@ def visual_method_dynamic(x , a, choosen_merged, input_a, save_string):
         # falls nötig ein Limit für die y-achse zu setzten
         #ax.set_ylim((0,50))
         # Einstellungen für die Achsenbeschriftung
-        ax.set_ylabel(text, fontproperties = label_font)
+        ax.set_ylabel(a_string, fontproperties = label_font)
         
         # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
-        if input_a == "1":
+        if a_int == 1:
             timeFmt = mdates.DateFormatter('%H:%M:%S')
             ax.xaxis.set_major_formatter(timeFmt)
             plt.xticks(rotation=45)
-            ax.set_xlabel("Stunden", fontproperties = label_font)#########################################################################################################
-            ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm "+"df_date", fontproperties=title_font) #####################################################  EINFÜGE DES DATUMS
+            ax.set_xlabel("Stunden", fontproperties = label_font)
+            ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm "+ f"{df_date}", fontproperties=title_font) 
         else:
             ax.set_xlabel("Datum", fontproperties = label_font)
-            #ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
+            ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
         plt.show()
         # einsetzen der Jahre (min and max)
         # sowie Einstellungen für die Achsenbeschriftung
@@ -751,8 +741,8 @@ def visual_method_dynamic(x , a, choosen_merged, input_a, save_string):
         ax = drop_na.plot(x ="longtime", y=save_string, kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
         ax.yaxis.grid(True)
         #ax.set_ylim((0,50))
-        ax.set_ylabel(text, fontproperties = label_font)
-        if input_a == "1":
+        ax.set_ylabel(a_string, fontproperties = label_font)
+        if a_int == 1:
             # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
             # setzt aus dem column "longtime" (UTC) unten folgende Syntax / rausgenommen wird stunde/minute/sekunde aus dem gesamten Datum/Uhrzeit
             timeFmt = mdates.DateFormatter('%H:%M:%S')
@@ -762,7 +752,7 @@ def visual_method_dynamic(x , a, choosen_merged, input_a, save_string):
             # Den Tag als titel für die x-achse angeben
             ax.set_xlabel("Stunden", fontproperties = label_font)
             # ausgewählten Tag für den Titel verwenden
-            ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm "+"df_date", fontproperties=title_font)##########################################################################df_date einbetten wieder
+            ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm "+ f"{df_date}", fontproperties=title_font)
         else:
             ax.set_xlabel("Datum", fontproperties = label_font)
             #ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
@@ -771,21 +761,25 @@ def visual_method_dynamic(x , a, choosen_merged, input_a, save_string):
 #"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""            
         # START Einstellungen für das Boxplot
         if x == 3:
-            print("Boxplot vom ",text ,"-Sensor:", pick_column)
+            print("Boxplot vom ",a_string ,"-Sensor:", pick_column)
             # plot Settings
             ax = choosen_merged.boxplot()
-            ax.set_title(f"{text}"+" Sensor: "+f"{pick_column}")
+            ax.set_title(f"{a_string}"+" Sensor: "+f"{pick_column}")
             #ax.set_xlabel("x_label")
-            ax.set_ylabel(f"{text}")
+            ax.set_ylabel(f"{a_string}")
 #"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""             
         # START Einstellungen für das Histogramm   
         if x == 4:
-            print("Histogramm vom ",text ,"-Sensor:", pick_column)
+            print("Histogramm vom ",a_string ,"-Sensor:", pick_column)
             hist = choosen_merged.hist(column=f"{save_string}")
         else:
             print("Die Eingabe ist ungültig!")
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+
 # main
 
 # # folgende Funktion dient zur Auswahl einer Tabelle aus der Datenbank

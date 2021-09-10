@@ -13,16 +13,39 @@ from prep_stats import temp_time, humi_time
 def quit(x):
     x.destroy()
 
+
+# Funktion gibt die Nummer des Sensor aus dem String zurück
+def get_string_number(stringChoosen):
+    print(stringChoosen)
+    # folgende Funktion dient zum filtern der Nummer des ausgewählten strings
+    SensNumber = [int(s) for s in stringChoosen.split() if s.isdigit()]
+    for i in SensNumber:
+        if i > 0:
+            save_number_string = str(i)
+            print(i)
+            print(save_number_string)
+            return save_number_string
+
+
+
 # funktion wird aktiviert wenn Button OK gedrückt wird
 def on_click_temp():
     # varibale muss global deklariert werden damit Sie in einer anderen Datei importiert werden kann
     global df_gui
     global stringChoosen
+    global save_number
     # setzen des Hackens im Menü Fenster
     #CheckVarData.set(True)
     # bekomme das ausgewählte column aus dem OptionMmenu
     val_temp = selected_temp.get()
     stringChoosen = val_temp
+
+    save_number = get_string_number(stringChoosen)
+
+    ##############
+    print(save_number)
+    ###############
+
     #übergege den column in ein neue DataFrame
     df_gui = temp_time[f"{val_temp}"]
     df_gui = pd.DataFrame(data=df_gui)
@@ -34,10 +57,18 @@ def on_cklick_humi():
     # varibale muss global deklariert werden damit Sie in einer anderen Datei importiert werden kann
     global df_gui
     global stringChoosen
+    global save_number
     # setzen des Hackens im Menü Fenster
     #CheckVarData.set(True)
+
+    # abspeichern des ausgewählten Senbsors als string
     val_humi = selected_humi.get()
     stringChoosen = val_humi
+
+    save_number = get_string_number(stringChoosen)
+    #############
+    print(save_number)
+    ###############
     df_gui = humi_time[f"{val_humi}"]
     df_gui = pd.DataFrame(data=df_gui)
     df_humi_clear = df_gui.dropna()

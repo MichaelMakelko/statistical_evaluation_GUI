@@ -155,30 +155,34 @@ def merge_df():
     pt.show()
 
 
-#######################################################################################################################
-#######################################################################################################################
+# Visualisierungsfunktion von DataFrames aus prep_stats
 def VisualDown():
     from prep_stats import visual_method_dynamic
-    from datensatz_window import df_gui, stringChoosen
-    #from kalender_window import a
-    a = 2
-    opt = str(option.get()) # ausgewählte Visualisierungsmethode
-    data = merged_df # DataFrame
-    print("IN DER FUNKTION")
+    # stringChoosen übergibt das ausgewählte column als string
+    from datensatz_window import stringChoosen, save_number
+    # deklarieren einer variable die sagt ob ein Tag oder Zeitraum gewählt wurde
+    from kalender_window import a, save_day, save_date_start, save_date_end
+    # dekalrieren der Variable ob Temperatur oder Luftfeuchtigkeit ausgewählt wurde
+    #save_string
+    
+
+
+    opt = str(option.get()) # ausgewählte Visualisierungsmethode aus den Radiobuttons
+
+    data = merged_df # DataFrame übergeben
+
         # Visualizing data according to the option
     if (opt == "1"):
         # Streuungsdiagramm
-        visual_method_dynamic(1,"Temperatur",data, a, stringChoosen)
+        visual_method_dynamic(1,"Temperatur",data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
     elif (opt == "2"):
         # Histogramm
-        visual_method_dynamic(4,"Temperatur",data, a, stringChoosen)
+        visual_method_dynamic(4,"Temperatur",data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
     elif (opt == "3"):
-        print("IN DER IF ABFRAGE")
         # Liniendiagramm
-        visual_method_dynamic(2,"Temperatur",data, a, stringChoosen)########## DIESER WEG FUNKTIONEN ANDERE FUNKTIONEN ANPASSEN !!!!
+        visual_method_dynamic(2,"Temperatur",data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end) #stringChoosen
         plot.show()
-##########################################################################################################################################
-####################################################################################################################### xxxxx   
+  
 
     # elif (opt == "4"):
     #     # Balkendiagramm
