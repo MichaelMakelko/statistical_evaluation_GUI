@@ -61,17 +61,15 @@ def maximum():
     ax = df_new.plot(x ="longtime", y=df_new.columns[1], kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
     ax.yaxis.grid(True)
     ax.set_xlabel("Datum", fontproperties = label_font)
-    ax.set_title("Maximum Temperatur-Werte / Liniendiagramm / Auflösung Tag", fontproperties=title_font)
+    ax.set_title("Maximum-Werte / Liniendiagramm / Auflösung Tag", fontproperties=title_font)
     plt.show()
 
 
 def minimum():
     # immer wenn eine Funktion angesprochen wird mit klammer () angesprochen wenn nichts übergeben wird / sonst unkorrekte ausgaben 
     df = df_for_statistic()
-    print("import df:")
-    print(df)
     df_new = (df.groupby(pd.Grouper(key="longtime",freq="D"))
-            .agg({df.columns[1]: np.max})
+            .agg({df.columns[1]: np.min})
             .reset_index())
 
     print(df_new)
@@ -86,10 +84,76 @@ def minimum():
     ax = df_new.plot(x ="longtime", y=df_new.columns[1], kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
     ax.yaxis.grid(True)
     ax.set_xlabel("Datum", fontproperties = label_font)
-    ax.set_title("Maximum Temperatur-Werte / Liniendiagramm / Auflösung Tag", fontproperties=title_font)
+    ax.set_title("Minimum-Werte / Liniendiagramm / Auflösung: Tag", fontproperties=title_font)
     plt.show()
     
     
+def mittelwert():
+    # immer wenn eine Funktion angesprochen wird mit klammer () angesprochen wenn nichts übergeben wird / sonst unkorrekte ausgaben 
+    df = df_for_statistic()
+    df_new = (df.groupby(pd.Grouper(key="longtime",freq="D"))
+            .agg({df.columns[1]: np.mean})
+            .reset_index())
+
+    print(df_new)
+    df_new = pd.DataFrame(data= df_new)
+
+    # Visualiesierung
+    ####
+    family = 'DejaVu Sans'
+    label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
+    title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
+    ####
+    ax = df_new.plot(x ="longtime", y=df_new.columns[1], kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
+    ax.yaxis.grid(True)
+    ax.set_xlabel("Datum", fontproperties = label_font)
+    ax.set_title("Mittelwerte / Liniendiagramm / Auflösung: Tag", fontproperties=title_font)
+    plt.show()
+
+def standartabweichung():
+    # immer wenn eine Funktion angesprochen wird mit klammer () angesprochen wenn nichts übergeben wird / sonst unkorrekte ausgaben 
+    df = df_for_statistic()
+    df_new = (df.groupby(pd.Grouper(key="longtime",freq="D"))
+            .agg({df.columns[1]: np.std})
+            .reset_index())
+
+    print(df_new)
+    df_new = pd.DataFrame(data= df_new)
+
+    # Visualiesierung
+    ####
+    family = 'DejaVu Sans'
+    label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
+    title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
+    ####
+    ax = df_new.plot(x ="longtime", y=df_new.columns[1], kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
+    ax.yaxis.grid(True)
+    ax.set_xlabel("Datum", fontproperties = label_font)
+    ax.set_title("Standartabweichung / Liniendiagramm / Auflösung: Tag", fontproperties=title_font)
+    plt.show()
+
+def Median():
+    # immer wenn eine Funktion angesprochen wird mit klammer () angesprochen wenn nichts übergeben wird / sonst unkorrekte ausgaben 
+    df = df_for_statistic()
+    df_new = (df.groupby(pd.Grouper(key="longtime",freq="D"))
+            .agg({df.columns[1]: np.median})
+            .reset_index())
+
+    print(df_new)
+    df_new = pd.DataFrame(data= df_new)
+
+    # Visualiesierung
+    ####
+    family = 'DejaVu Sans'
+    label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
+    title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
+    ####
+    ax = df_new.plot(x ="longtime", y=df_new.columns[1], kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
+    ax.yaxis.grid(True)
+    ax.set_xlabel("Datum", fontproperties = label_font)
+    ax.set_title("Median-Werte / Liniendiagramm / Auflösung: Tag", fontproperties=title_font)
+    plt.show()
+
 
 
 def df_for_statistic():
@@ -109,11 +173,11 @@ def newselection(event):
     compare = event.widget.get()
     
     if compare == "Standartabweichung":
-        print("")
+        standartabweichung()
     if compare == "median":
-        print("")
+        Median()
     if compare == "Mittelwert":
-        print("")
+        mittelwert()
     if compare == "maximum":
         maximum()
     if compare == "minimum":
@@ -154,6 +218,11 @@ def open_statistik():
     cb1.grid(column=0, row=1, padx=5, pady=5)
     cb1.bind("<<ComboboxSelected>>", newselection)
 
-    cb2 = ttk.Combobox(fr, values=('X', 'Y', 'XX', 'XY'))
-    cb2.grid(column=1, row=1, padx=5, pady=5)
-    cb2.bind("<<ComboboxSelected>>", newselection)
+
+    #---------------------------------------------------------------------------------------------#
+    fr = ttk.Frame(frame_statistik)
+    fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
+    #---------------------------------------------------------------------------------------------#
+    KalButton = ttk.Button(fr, text="Beenden", command=statistik.destroy)
+    KalButton.grid(column=1 , row=0 , padx=5, pady=5)
+
