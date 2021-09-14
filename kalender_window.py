@@ -16,13 +16,10 @@ def grab_date_first():
     label_first_date.config(text=cal.get_date())
     # speicher das Datum ab
     saveFirstDate = cal.get_date()
-    #a = stringChoosen.replace("_", " ")
-    print("FirstDate: ", saveFirstDate)###########################################################################
     save_first_date = saveFirstDate
+    #aufgrund von date_pattern in dem Calnder kann das Format mit to_datetime ermittelt werden
     saveFirstDate = pd.to_datetime(saveFirstDate, format="%d-%m-%Y")
-    print("FirstDate nach pandas1: ", saveFirstDate)###########################################################################
-    #saveFirstDate = pd.to_datetime(saveFirstDate, format="%d%m%Y")
-    #print("FirstDate nach pandas2: ", saveFirstDate)###########################################################################
+    print("FirstDate nach pandas1: ", saveFirstDate)
     fi = firstLast_temp_df["longtime"].iloc[0]
     la = firstLast_temp_df["longtime"].iloc[1]
     # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
@@ -42,9 +39,9 @@ def grab_date_last():
     saveLastDate = cal.get_date()
     save_last_date = saveLastDate
     # wandele das Datum von str in ein Timestamp um (für den vergelich notwendig)
+    #aufgrund von date_pattern in dem Calnder kann das Format mit to_datetime ermittelt werden
     saveLastDate = pd.to_datetime(saveLastDate, format="%d-%m-%Y")
-    #saveLastDate = pd.to_datetime(saveLastDate, format="%Y%d%m")
-    print("lastDate: ", saveLastDate)############################################################################
+    print("lastDate: ", saveLastDate)
     fi = firstLast_temp_df["longtime"].iloc[0]
     la = firstLast_temp_df["longtime"].iloc[1]
     # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
@@ -126,6 +123,7 @@ def open_kalender():
     frame_kalender.pack(side=TOP, pady=10, padx=10, anchor=W)
     #---------------------------------------------------------------------------------------------#
     # Kalender
+    # date_pattern hat es möglich geamcht das Format zu ändern
     cal = Calendar(frame_kalender, selectmode="day", year=2021, month=9, day=6, date_pattern="dd-mm-y")########################
     cal.grid(column=0, row=0, pady=5, padx=5)
     #---------------------------------------------------------------------------------------------#

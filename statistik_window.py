@@ -7,6 +7,7 @@ from tkcalendar import *
 import tkinter as tk
 from tkinter import ttk
 import numpy as np
+import matplotlib.pyplot as plt, matplotlib.font_manager as fm
 
 # def statistik_module():
 #     test = open_statistik().optionStat
@@ -44,8 +45,24 @@ def maximum():
     df = df_for_statistic()
     print("import df:")
     print(df)
-    df_new = df.groupby(pd.Grouper(key="longtime",freq="D")).agg({df.columns[1]: [np.max]})
+    df_new = (df.groupby(pd.Grouper(key="longtime",freq="D"))
+            .agg({df.columns[1]: np.max})
+            .reset_index())
     print(df_new)
+    df_new = pd.DataFrame(data= df_new)
+    print(df_new)
+
+    # Visualiesierung
+    ####
+    family = 'DejaVu Sans'
+    label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
+    title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
+    ####
+    ax = df_new.plot(x ="longtime", y=df_new.columns[1], kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
+    ax.yaxis.grid(True)
+    ax.set_xlabel("Datum", fontproperties = label_font)
+    ax.set_title("Maximum Temperatur-Werte / Liniendiagramm / Auflösung Tag", fontproperties=title_font)
+    plt.show()
 
 
 def minimum():
@@ -53,6 +70,24 @@ def minimum():
     df = df_for_statistic()
     print("import df:")
     print(df)
+    df_new = (df.groupby(pd.Grouper(key="longtime",freq="D"))
+            .agg({df.columns[1]: np.max})
+            .reset_index())
+
+    print(df_new)
+    df_new = pd.DataFrame(data= df_new)
+
+    # Visualiesierung
+    ####
+    family = 'DejaVu Sans'
+    label_font = fm.FontProperties(family=family, style='normal', size=16, weight='normal', stretch='normal')
+    title_font = fm.FontProperties(family=family, style='normal', size=20, weight='normal', stretch='normal')
+    ####
+    ax = df_new.plot(x ="longtime", y=df_new.columns[1], kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
+    ax.yaxis.grid(True)
+    ax.set_xlabel("Datum", fontproperties = label_font)
+    ax.set_title("Maximum Temperatur-Werte / Liniendiagramm / Auflösung Tag", fontproperties=title_font)
+    plt.show()
     
     
 
@@ -80,10 +115,8 @@ def newselection(event):
     if compare == "Mittelwert":
         print("")
     if compare == "maximum":
-        print("gehe jetzt in die maximum funktion")
         maximum()
     if compare == "minimum":
-        print("gehe in minimum")
         minimum()
 
 def open_statistik():
