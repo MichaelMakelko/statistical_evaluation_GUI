@@ -686,9 +686,13 @@ def find_datagap(choosen_merged, save_string):
     if df_b[longest_na_gap] == 1:
         print("Datenlücke gefunden!")
         print("Beginn der Datenlücke:", first_date_gap ," ende der Datenklücke: ", last_date_gap)
+        df_gap = pd.DataFrame ({"gap_dates":[first_date_gap, last_date_gap]})
+        return df_gap
     # den wenn isch der größte aufeinanderfolgende-Wert sich wiederholt ist dieser keine Datenlücke! sondern lediglich der die Zeit wonach der Sensor einen Wert leifert.    
     if df_b[longest_na_gap] > 1:
         print("keine Datenlücke gefunden")
+        text = "keine Datenlücke gefunden"
+        return text
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -717,12 +721,13 @@ def visual_method_dynamic(x , a_string, choosen_merged, a_int, save_string, pick
         #ax.set_ylim((0,50))
         # Einstellungen für die Achsenbeschriftung
         ax.set_ylabel(a_string, fontproperties = label_font)
-        
         # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
         if a_int == 1:
+            # Anpassen der X-Achsen Beschriftung bezüglich Stundenskalierung
             timeFmt = mdates.DateFormatter('%H:%M:%S')
             ax.xaxis.set_major_formatter(timeFmt)
             plt.xticks(rotation=45)
+            # x und y-Achsen Beschriftung 
             ax.set_xlabel("Stunden", fontproperties = label_font)
             ax.set_title("Sensor: "+f"{pick_column}"+" Streuungsdiagramm "+ f"{df_date}", fontproperties=title_font) 
         else:
@@ -736,7 +741,6 @@ def visual_method_dynamic(x , a_string, choosen_merged, a_int, save_string, pick
     if x == 2:
         # das Liniendiagramm kann nur angezeigt werden wenn in dem Dataframe keine NaN-Werte vorhanden sind
         drop_na = choosen_merged.dropna()
-        print("IN DER ANDEREN DATEI")
         
         ax = drop_na.plot(x ="longtime", y=save_string, kind="line" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
         ax.yaxis.grid(True)
@@ -755,25 +759,23 @@ def visual_method_dynamic(x , a_string, choosen_merged, a_int, save_string, pick
             ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm "+ f"{df_date}", fontproperties=title_font)
         else:
             ax.set_xlabel("Datum", fontproperties = label_font)
-            #ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
+            ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
         plt.show()
                 
 #"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""            
         # START Einstellungen für das Boxplot
-        if x == 3:
-            print("Boxplot vom ",a_string ,"-Sensor:", pick_column)
-            # plot Settings
-            ax = choosen_merged.boxplot()
-            ax.set_title(f"{a_string}"+" Sensor: "+f"{pick_column}")
-            #ax.set_xlabel("x_label")
-            ax.set_ylabel(f"{a_string}")
+    if x == 3:
+        # plot Settings
+        ax = choosen_merged.boxplot()
+        ax.set_title("Boxplot"+" Sensor: "+f"{pick_column}"+" "+f"{df_date}")
+        #ax.set_xlabel("x_label")
+        ax.set_ylabel(f"{a_string}")
+        plt.show()
 #"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""             
         # START Einstellungen für das Histogramm   
-        if x == 4:
-            print("Histogramm vom ",a_string ,"-Sensor:", pick_column)
-            hist = choosen_merged.hist(column=f"{save_string}")
-        else:
-            print("Die Eingabe ist ungültig!")
+    if x == 4:
+        choosen_merged.hist(column=f"{save_string}")
+        plt.show()
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#

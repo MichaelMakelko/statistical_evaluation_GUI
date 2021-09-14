@@ -12,37 +12,46 @@ from tkinter import ttk
 def grab_date_first():
     global saveFirstDate
     global flag_A
+    global save_first_date
     label_first_date.config(text=cal.get_date())
     # speicher das Datum ab
     saveFirstDate = cal.get_date()
-    saveFirstDate = pd.to_datetime(saveFirstDate)
-
+    #a = stringChoosen.replace("_", " ")
+    print("FirstDate: ", saveFirstDate)###########################################################################
+    save_first_date = saveFirstDate
+    saveFirstDate = pd.to_datetime(saveFirstDate, format="%d-%m-%Y")
+    print("FirstDate nach pandas1: ", saveFirstDate)###########################################################################
+    #saveFirstDate = pd.to_datetime(saveFirstDate, format="%d%m%Y")
+    #print("FirstDate nach pandas2: ", saveFirstDate)###########################################################################
     fi = firstLast_temp_df["longtime"].iloc[0]
     la = firstLast_temp_df["longtime"].iloc[1]
     # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
     if fi < saveFirstDate and la > saveFirstDate:
         pass
     else:
-        ttk.messagebox.showwarning(title="Warnung", message="Das ausgewählte Datum ist nicht in der Datenbank aufgenommen")
+        messagebox.showwarning(title="Warnung", message="Das ausgewählte Datum ist nicht in der Datenbank aufgenommen")
     
 
 # zweites Datum für den Zeitraum wählen
 def grab_date_last():
     global saveLastDate
     global flag_B
+    global save_last_date
     label_last_date.config(text=cal.get_date())
     # speicher das Datum ab
     saveLastDate = cal.get_date()
+    save_last_date = saveLastDate
     # wandele das Datum von str in ein Timestamp um (für den vergelich notwendig)
-    saveLastDate = pd.to_datetime(saveLastDate)
-
+    saveLastDate = pd.to_datetime(saveLastDate, format="%d-%m-%Y")
+    #saveLastDate = pd.to_datetime(saveLastDate, format="%Y%d%m")
+    print("lastDate: ", saveLastDate)############################################################################
     fi = firstLast_temp_df["longtime"].iloc[0]
     la = firstLast_temp_df["longtime"].iloc[1]
     # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
     if fi < saveLastDate and la > saveLastDate:
         pass
     else:
-        ttk.messagebox.showwarning(title="Warnung", message="Das ausgewählte Datum ist nicht in der Datenbank aufgenommen")
+        messagebox.showwarning(title="Warnung", message="Das ausgewählte Datum ist nicht in der Datenbank aufgenommen")
     
 
 # eingegebene Grenzen werden in ein DataFrame gefiltert
@@ -55,6 +64,8 @@ def df_filter_date():
     global save_date_end
     # setzen des hackens im Menu Fenster
     #CheckVarDate.set(True)
+
+
     df_date = choose_date_gui(saveFirstDate, saveLastDate)
     print(df_date)
 
@@ -115,7 +126,7 @@ def open_kalender():
     frame_kalender.pack(side=TOP, pady=10, padx=10, anchor=W)
     #---------------------------------------------------------------------------------------------#
     # Kalender
-    cal = Calendar(frame_kalender, selectmode="day", year=2021, month=9, day=6)
+    cal = Calendar(frame_kalender, selectmode="day", year=2021, month=9, day=6, date_pattern="dd-mm-y")########################
     cal.grid(column=0, row=0, pady=5, padx=5)
     #---------------------------------------------------------------------------------------------#
     # erstellen einen conatiner für die Info Box

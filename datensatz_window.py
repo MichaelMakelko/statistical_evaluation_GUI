@@ -16,14 +16,13 @@ def quit(x):
 
 # Funktion gibt die Nummer des Sensor aus dem String zurück
 def get_string_number(stringChoosen):
-    print(stringChoosen)
+    # der String muss mit Leerzeichen getrennt werden um die Nummer/Zahl aus dem string filtern zu können
+    a = stringChoosen.replace("_", " ")
     # folgende Funktion dient zum filtern der Nummer des ausgewählten strings
-    SensNumber = [int(s) for s in stringChoosen.split() if s.isdigit()]
+    SensNumber = [int(s) for s in a.split() if s.isdigit()]
     for i in SensNumber:
         if i > 0:
             save_number_string = str(i)
-            print(i)
-            print(save_number_string)
             return save_number_string
 
 
@@ -34,21 +33,19 @@ def on_click_temp():
     global df_gui
     global stringChoosen
     global save_number
+    global axeTitle
+    # übergebe den Titel für die Y-Achse
+    axeTitle = "Temperatur"
     # setzen des Hackens im Menü Fenster
     #CheckVarData.set(True)
     # bekomme das ausgewählte column aus dem OptionMmenu
     val_temp = selected_temp.get()
     stringChoosen = val_temp
-
     save_number = get_string_number(stringChoosen)
-
-    ##############
-    print(save_number)
-    ###############
-
     #übergege den column in ein neue DataFrame
     df_gui = temp_time[f"{val_temp}"]
     df_gui = pd.DataFrame(data=df_gui)
+    # entferne für die Anzeigetabelle die NaN-Werte
     df2_clear = df_gui.dropna()
     buttonhumi['state'] = tk.DISABLED
     show_tabel(df2_clear)
@@ -58,17 +55,16 @@ def on_cklick_humi():
     global df_gui
     global stringChoosen
     global save_number
+    global axeTitle
+    # übergebe den Titel für die Y-Achse
+    axeTitle = "Luftfeuchtigkeit"
     # setzen des Hackens im Menü Fenster
     #CheckVarData.set(True)
 
     # abspeichern des ausgewählten Senbsors als string
     val_humi = selected_humi.get()
     stringChoosen = val_humi
-
     save_number = get_string_number(stringChoosen)
-    #############
-    print(save_number)
-    ###############
     df_gui = humi_time[f"{val_humi}"]
     df_gui = pd.DataFrame(data=df_gui)
     df_humi_clear = df_gui.dropna()

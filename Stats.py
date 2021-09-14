@@ -22,6 +22,7 @@ from sympy.stats import independent
 from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
 from kalender_window import open_kalender
 from datensatz_window import open_datensatz
+from statistik_window import open_statistik
 
 
 
@@ -138,11 +139,24 @@ def visualizeData():
 def merge_df():
     # df_date (das ausgewählte datum als DataFrame) erst in der Funktion importieren wenn es benötigt wird!
     from kalender_window import df_date
-    from datensatz_window import df_gui
+    from datensatz_window import df_gui, stringChoosen
+    from prep_stats import find_datagap
     global merged_df
+    global first_gap_date
+    global last_gap_date
+
+
 
     merged_df = pd.merge(df_date, df_gui , left_index=True, right_index=True)
-    merged_df = merged_df.dropna()
+    gap = find_datagap(merged_df, stringChoosen)
+    print(gap)
+    first_gap_date = gap["gap_dates"].iloc[0]
+    last_gap_date = gap["gap_dates"].iloc[1]
+    # ändere den text im Output
+    change_text()
+
+
+    merged_df_clear = merged_df.dropna()
 
     # neues Fenster erstellen um die ausgewählten Sensor Tabelle anzuzeigen
     sensGewählt = Tk()
@@ -151,56 +165,62 @@ def merge_df():
     frame_tabelle_sens = Frame(sensGewählt)
     frame_tabelle_sens.pack(fill=X, side=TOP, padx=10, pady=10)
     #---------------------------------------------------------------------------------------------#
-    pt = Table(frame_tabelle_sens, dataframe=merged_df)
+    pt = Table(frame_tabelle_sens, dataframe=merged_df_clear)
     pt.show()
+
 
 
 # Visualisierungsfunktion von DataFrames aus prep_stats
 def VisualDown():
     from prep_stats import visual_method_dynamic
     # stringChoosen übergibt das ausgewählte column als string
-    from datensatz_window import stringChoosen, save_number
+    from datensatz_window import stringChoosen, save_number, axeTitle
     # deklarieren einer variable die sagt ob ein Tag oder Zeitraum gewählt wurde
     from kalender_window import a, save_day, save_date_start, save_date_end
     # dekalrieren der Variable ob Temperatur oder Luftfeuchtigkeit ausgewählt wurde
     #save_string
-    
-
 
     opt = str(option.get()) # ausgewählte Visualisierungsmethode aus den Radiobuttons
-
     data = merged_df # DataFrame übergeben
+    print(opt)
 
         # Visualizing data according to the option
     if (opt == "1"):
         # Streuungsdiagramm
-        visual_method_dynamic(1,"Temperatur",data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
+        visual_method_dynamic(1,axeTitle,data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
     elif (opt == "2"):
         # Histogramm
-        visual_method_dynamic(4,"Temperatur",data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
+        visual_method_dynamic(4,axeTitle,data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
     elif (opt == "3"):
         # Liniendiagramm
-        visual_method_dynamic(2,"Temperatur",data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end) #stringChoosen
-        plot.show()
-  
+        visual_method_dynamic(2,axeTitle,data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
+
+    elif (opt == "5"):
+        # Boxplot
+        visual_method_dynamic(3,axeTitle,data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
 
     # elif (opt == "4"):
     #     # Balkendiagramm
     #     visual_method_dynamic(4,)
-
-    elif (opt == "5"):
-        # Boxplot
-        visual_method_dynamic(3,"Temperatur",data, a, stringChoosen)
         
+# reset Taste um die gewählten Daten anzuzeigen
+def reset_menu():
+    var_info1.set("None")
+    var_info2.set("None")
+    var_info3.set("None")
+    var_info4.set("None")
+    var_info5.set("None")
 
 
 
-
-
-
-
-
-
+def change_text():
+    from kalender_window import save_first_date, save_last_date
+    from datensatz_window import stringChoosen
+    var_info1.set(save_first_date)
+    var_info2.set(save_last_date)
+    var_info3.set(stringChoosen)
+    var_info4.set(first_gap_date)
+    var_info5.set(last_gap_date)
 
 
 
@@ -287,10 +307,6 @@ checkData.pack(side=LEFT)
 CheckVarData=BooleanVar()
 checkbuttondata= ttk.Checkbutton(fr2)
 checkbuttondata.pack(side=LEFT)
-
-# box_data = Entry(fr2, width=2)
-# box_data.configure({"background": "red"})
-# box_data.pack(side=LEFT)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # neues übergeordnetes Frame
@@ -298,23 +314,7 @@ checkbuttondata.pack(side=LEFT)
 über_Frame.pack(side=TOP, anchor=W)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
-fr = ttk.LabelFrame(über_Frame, text="Aktion")
-fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
-
-# Visualisierungstaste erstellen                                                            #####################################################
-btnVisual = ttk.Button(fr, text="Visualisierung", command=VisualDown, state=tk.DISABLED) ############################################################ BEI COMMAND WIEDER VISUALIZEDATA 
-btnVisual.grid(column=0, row=0 ,padx=5, pady=5)
-
-connButton = ttk.Button(fr, text="Tabellen\nzusammenfügen", command=merge_df)
-connButton.grid(column=1, row=0 ,padx=5, pady=5)
-#---------------------------------------------------------------------------------------------#
-#---------------------------------------------------------------------------------------------#
-# neues übergeordnetes Frame
-über_Frame = ttk.Frame(root)
-über_Frame.pack(side=TOP, anchor=W)
-#---------------------------------------------------------------------------------------------#
-#---------------------------------------------------------------------------------------------#
-fr = ttk.LabelFrame(über_Frame, text="statistische Visualisierung")
+fr = ttk.LabelFrame(über_Frame, text="Diagrammtyp")
 fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
 # wird ein Radiobutton angegklickt wird in option der Value-Wert von dem gedrückten RadioButon abgespeichert
@@ -330,23 +330,116 @@ r4 = ttk.Radiobutton(fr, text="Balken-\ndiagramm", variable=option, value=4, com
 r4.grid(column=3, row=0, padx=5, pady=5)
 r5 = ttk.Radiobutton(fr, text="Boxplot", variable=option, value=5, command=enableVis)
 r5.grid(column=4, row=0, padx=5, pady=5)
+# box_data = Entry(fr2, width=2)
+# box_data.configure({"background": "red"})
+# box_data.pack(side=LEFT)
 #---------------------------------------------------------------------------------------------#
-fr = ttk.LabelFrame(über_Frame, text="statistische Verfahren")
-fr.pack(side=TOP,anchor=SW, padx=10, pady=10)
 #---------------------------------------------------------------------------------------------#
-################################################################################################################################
-################################################################################################################################ ANPASEN STATISTISCHE VERFAHREN VARIABELN AUF DIE AUSWERTUNGEN prep_stats !!!!!!
-optionStat = IntVar()
-r6 = ttk.Radiobutton(fr, text="standart-\nabweichung", variable=optionStat, value=1)
-r6.grid(column=0, row=0, padx=5, pady=5)
-r7 = ttk.Radiobutton(fr, text="Median", variable=optionStat, value=2)
-r7.grid(column=1, row=0, padx=5, pady=5)
-r8 = ttk.Radiobutton(fr, text="Mittel-\nwert", variable=optionStat, value=3)
-r8.grid(column=2, row=0, padx=5, pady=5)
-r9 = ttk.Radiobutton(fr, text="oberes\nQuantil", variable=optionStat, value=4)
-r9.grid(column=3, row=0, padx=5, pady=5)
-r10 = ttk.Radiobutton(fr, text="unteres\nQuantil", variable=optionStat, value=5)
-r10.grid(column=4, row=0, padx=5, pady=5)
+# neues übergeordnetes Frame
+über_Frame = ttk.Frame(root)
+über_Frame.pack(side=TOP, anchor=W)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+fr = ttk.LabelFrame(über_Frame, text="Aktion")
+fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
+#---------------------------------------------------------------------------------------------#
+# Visualisierungstaste erstellen                                                         
+btnVisual = ttk.Button(fr, text="Visualisierung", command=VisualDown, state=tk.DISABLED) 
+btnVisual.grid(column=0, row=0 ,padx=5, pady=5)
+# Zusammenfüger des ausgewählten Zeitraums mit dem ausgewähltem Sensor
+connButton = ttk.Button(fr, text="Tabellen\nzusammenfügen", command=merge_df)
+connButton.grid(column=1, row=0 ,padx=5, pady=5)
+# auswählen des statistischen Verfahren auf den diagrammtyp
+# darauf achten das nicht jedes statistische Verfahren angewendet werden kann
+statBtn= ttk.Button(fr, text="statistik\nwählen", command=open_statistik)
+statBtn.grid(column=2, row=0 ,padx=5, pady=5)
+# zurücksetzen Button erstellen um das untere Anzeigefenster (die geloggten FElder zu reseten)
+resetBtn = ttk.Button(fr, text="Zurücksetzen", command= reset_menu)
+resetBtn.grid(column=3, row=0 ,padx=5, pady=5)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+# neues übergeordnetes Frame für die erste Linie
+über_Frame = ttk.Frame(root)
+über_Frame.pack(side=TOP, anchor=W)
+# erste Linie
+fr = Canvas(über_Frame, width=450, height=5)
+fr.pack(side=TOP, anchor=W)
+fr.create_line(0, 0, 450, 0, fill="black", width=5)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+# neues übergeordnetes Frame für die output box zwischen den Abschnittslinien
+über_Frame = ttk.Frame(root)
+über_Frame.pack(side=TOP, anchor=W)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+fr = ttk.LabelFrame(über_Frame, text="Daten")
+fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
+#---------------------------------------------------------------------------------------------#
+###############################################################################################
+# hier kommen die geloggten daten ein aus zeitraum und welcher datensatz ausgewählt ist sowie ausgewätes statistisches Verfahren auf den Diagrammtypen
+# OUTPUT BOX
+info_tit1=ttk.Label(fr, text="Datensatz:")
+info_tit1.grid(column=0, row=0, padx=5, pady=5)
+
+var_info3 = StringVar()
+var_info3.set("None")
+info_set_datensatz=ttk.Label(fr, textvariable=var_info3)
+info_set_datensatz.grid(column=1, row=0, padx=5, pady=5)
+
+
+info_tit2=ttk.Label(fr, text="Zeitraum:")
+info_tit2.grid(column=0, row=1, padx=5, pady=5)
+
+var_info1 = StringVar()
+var_info2 = StringVar()
+var_info4 = StringVar()
+var_info5 = StringVar()
+
+var_info1.set("None")
+info1_set=ttk.Label(fr, textvariable=var_info1)
+info1_set.grid(column=1, row=1, padx=5, pady=5)
+# setzen des ersten Datum
+#info1_set.config(text=saveFirstDate)
+
+inf=ttk.Label(fr, text="bis")
+inf.grid(column=2, row=1, padx=5, pady=5)
+
+var_info2.set("None")
+info2_set=ttk.Label(fr, textvariable=var_info2)
+info2_set.grid(column=3, row=1, padx=5, pady=5)
+# setzen des zweiten Datums
+#info2_set.config(text=saveLastDate)
+
+info_tit3=ttk.Label(fr, text="Datenlücke:")
+info_tit3.grid(column=0, row=3, padx=5, pady=5)
+
+var_info4.set("None")
+info2_set=ttk.Label(fr, textvariable=var_info4)
+info2_set.grid(column=1, row=3, padx=5, pady=5)
+
+inf2=ttk.Label(fr, text="bis")
+inf2.grid(column=2, row=3, padx=5, pady=5)
+
+var_info5.set("None")
+info3_set=ttk.Label(fr, textvariable=var_info5)
+info3_set.grid(column=3, row=3, padx=5, pady=5)
+
+
+
+
+
+###############################################################################################
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+# neues übergeordnetes Frame
+über_Frame = ttk.Frame(root)
+über_Frame.pack(side=TOP, anchor=W)
+#---------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------#
+# zweite Linie
+fr = Canvas(über_Frame, width=450, height=5)
+fr.pack(side=TOP, anchor=W)
+fr.create_line(0, 0, 450, 0, fill="black", width=5)
 #---------------------------------------------------------------------------------------------#
 # neuer container für die Beenden Taste
 fr = ttk.Frame(root)
