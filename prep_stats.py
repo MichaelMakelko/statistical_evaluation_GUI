@@ -1,5 +1,6 @@
 ## Berrechnungs Bibliotheken
 # pandas besitzt alle notwendigen Werkzeuge für die transformation unserer Daten"
+from numpy.core.fromnumeric import choose
 import pandas as pd # beinhalt z.B. arbeiten mit DataFrames
 import numpy as np # beinhalt z.B. arbeiten mit sogenanten Numpy-Arrays
 #from scipy import stats
@@ -169,6 +170,9 @@ for i in temp_utc_t:
     temp_df_utc_t.append(x)
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # FUnktion um Ausreißer zu entfernen
+##########################################################################
+# In der Evaluirung entdeckt das nicht nur Ausreißer entfertn wurden !!! #
+##########################################################################
 def temp_filter(x):
     # benötigt das importieren der Bibliotheken die in dieser Funktion Verwendung finden
     from scipy import stats
@@ -182,8 +186,21 @@ def temp_filter(x):
     # uhrsprüngliche Dataframe in den Array einfügen
     new_Frame = x[filtered_entries]
     return new_Frame
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# filtern von Ausreißern
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+# Ausreißer Funktion 2.0 #
+
+def filter_2(x, i):
+    q1 = x[i].quantile(0.25) 
+    q3 = x[i].quantile(0.75)
+    iqr = q3 - q1
+
+    df_out = x[(x[i] > (q1 - 1.5 * iqr)) & (x[i] < (q3 + 1.5 * iqr))] #dataframe
+    return df_out
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+##########################
+# filtern von Ausreißern #
+##########################
 # Problem bestand darin, dass kein graph angezeigt wurde aufgrund der gewaltigen änderung des Maßstabes eines Ausßreißers
 # Listen für die Daten ohne Ausreißer
 temp_value_f=[]
@@ -192,17 +209,24 @@ humi_value_f=[]
 # Folgende Funktion filtert Ausreißer aus einer Gruppe von Daten
 # läufer durch jede zeile in der Liste der Temperaturdaten 
 for i in range(0, len(temp_df_list), 1): # len() gibt die länge des Datafrmaes als integer zurück / range(start, ende, läufer)
+    # greife auf den df in der Liste zu / und übergebe es auf x
     x = temp_df_list[i]
+    strSensor = x.columns[0]
+    
     # fügt jeden Column in die Funktion temp_filter() aus der Datei preparation_data
-    x_filter=temp_filter(x)
+    #x_filter=temp_filter(x)
+    new_df = filter_2(x, strSensor)
     # fügt anschließend die gefilterte Liste einer neuen Liste an
-    temp_value_f.append(x_filter)
+    temp_value_f.append(new_df)
     
 for i in range(0, len(humi_df_list), 1):
     x = humi_df_list[i]
-    x_filter=temp_filter(x)
-    humi_value_f.append(x_filter)
+    strSensor = x.columns[0]
+    #x_filter=temp_filter(x)
+    new_df = filter_2(x, strSensor)
+    humi_value_f.append(new_df)
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 ## Umwandeln der unix-Zeitstempel in Datum/Uhrzeit
 # einen einzelnen Datframe aus "longtime" Daten erstellen
 utc_stamp = stamp["longtime"]
@@ -212,6 +236,7 @@ utc_stamp = pd.to_datetime(utc_stamp, unit="ms") # unit einstellen und angeben w
 df_timestamp = pd.DataFrame({"timestamp": utc_stamp})
 
 # Sortieren der Column namen
+####################################################################################################################################################################
 temp_df_list.sort(key=str)
 temp_df_utc_r.sort(key=str)
 temp_df_utc_t.sort(key=str)
@@ -230,12 +255,16 @@ humi_value_f.sort(key=str)
 df_temp_value = pd.concat(temp_value_f, axis=1)
 df_humi_value = pd.concat(humi_value_f, axis=1)
 
+print(df_temp_value)
+
 #im nächsten Abschnitt wird jetzt das gesamtte Dataframe der aufbereiteten Daten mit der aufgenommenen Zeit zusammengelegt. Dabei wird nur auf den Index geschaut, das heißt dass der Zeitstempel mit dem jeweiligen Index auch an den zugehörigen Index im Dataframe hinterlegt wird.
 # legt die aufbereiteten Daten mit den zugehörigen Zeitstempeln zusammen
 # gesamtes Dataframe der Temperatursensoren
 temp_time = pd.merge(utc_stamp,df_temp_value, left_index=True, right_index=True)
 # gesamtes Dataframe der Luftfeuchtigkeitssensoren
 humi_time = pd.merge(utc_stamp,df_humi_value, left_index=True, right_index=True)
+
+print(temp_time)
 
 # Kalender erstellen
 # folgender Abschnitt dient zu erstellung eines Kalenders in Tag/Monat/Jahr/Stunde/Minute separat in Spalten getrennt wird. Behält jedoch den Uhrsprünglichen Index bei.
@@ -551,14 +580,25 @@ def choose_date_gui(saveFirstDate, saveLastDate):
 # den letzten Index des DataFrame speichern
 lastIndexTemp =temp_time.index[-1]
 lastIndexHumi =humi_time.index[-1]
+
+firstIndexTemp = temp_time.index[0]
+firstIndexHumi = humi_time.index[0]
+
+print(firstIndexTemp)
+print(lastIndexTemp)
+
 # das erste und letzte Datum in ein Datafrmae speichern
-df_first_date = pd.DataFrame(data=firstLast_temp_df, columns=["longtime"], index=[0])
+df_first_date = pd.DataFrame(data=firstLast_temp_df, columns=["longtime"], index=[firstIndexTemp])
 df_last_date = pd.DataFrame(data=firstLast_temp_df, columns=["longtime"], index=[lastIndexTemp])
+
+print("das ist das datum bevor es zum string wird: ", df_first_date)
 
 # erstes Datum welches in die Datenbank geschrieben wurde in einen String umwandeln
 first_string = df_first_date.to_string(header=False, index=False, index_names=False)
 # letztes Datum welches in die Datenbank geschrieben wurde in einen String umwandeln
 last_string = df_last_date.to_string(header=False, index=False, index_names=False)
+
+print("das sol der string sein: ",first_string)
 
 #################################################################################################################################################################
 # Folgender part dient jetzt den ersten und letzten string (die das Datum und Uhrzeit beinahlten) aufzubereiten                                                 # 
@@ -761,20 +801,61 @@ def visual_method_dynamic(x , a_string, choosen_merged, a_int, save_string, pick
             ax.set_xlabel("Datum", fontproperties = label_font)
             ax.set_title("Sensor:"+f"{pick_column}"+" Liniendiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
         plt.show()
+#"""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""
+    if x == 5:
+        # Balkendiagramm
+        ##################################################################################
+        # gruppierene des Datensatzes in Tage da ansonsten in dem Balkendiagramm zuviel angezeigt wird
+        choosen_merged = (choosen_merged.groupby(pd.Grouper(key="longtime",freq="D")))
+
+        ##################################################################################
+        
+        ax = choosen_merged.plot(x ="longtime", y=save_string, kind="bar" ,figsize=[15, 5], linewidth=0.5, alpha=0.8, color="#003399")
+        #ax.yaxis.grid(True)
+        #ax.set_ylim((0,50))
+        ax.set_ylabel(a_string, fontproperties = label_font)
+        if a_int == 1:
+            # stelle die Einstellungen für den plot ein um nur die Zeiteinheit auf der x-Achse anzuzeigen
+            # setzt aus dem column "longtime" (UTC) unten folgende Syntax / rausgenommen wird stunde/minute/sekunde aus dem gesamten Datum/Uhrzeit
+            timeFmt = mdates.DateFormatter('%H:%M:%S')
+            ax.xaxis.set_major_formatter(timeFmt)
+            # Achsenbeschriftung um 45 grad drehen
+            plt.xticks(rotation=45)
+            # Den Tag als titel für die x-achse angeben
+            ax.set_xlabel("Stunden", fontproperties = label_font)
+            # ausgewählten Tag für den Titel verwenden
+            ax.set_title("Sensor:"+f"{pick_column}"+" Balkendiagramm "+ f"{df_date}", fontproperties=title_font)
+        else:
+            ax.set_xlabel("Datum", fontproperties = label_font)
+            ax.set_title("Sensor:"+f"{pick_column}"+" Balkendiagramm, von {} bis {}".format(input_beginn, input_end), fontproperties=title_font)
+        plt.show()
                 
 #"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""            
         # START Einstellungen für das Boxplot
     if x == 3:
         # plot Settings
         ax = choosen_merged.boxplot()
-        ax.set_title("Boxplot"+" Sensor: "+f"{pick_column}"+" "+f"{df_date}")
-        #ax.set_xlabel("x_label")
-        ax.set_ylabel(f"{a_string}")
-        plt.show()
+        # falls nur ein Tag ausgewählt wurde
+        if a_int == 1:
+
+            ax.set_title("Boxplot"+" Sensor: "+f"{pick_column}"+" "+f"{df_date}")
+            #ax.set_xlabel("x_label")
+            ax.set_ylabel(f"{a_string}")
+
+        else:
+            ax.set_title("Boxplot"+" Sensor: "+f"{pick_column}"+" "+"von {} bis {}".format(input_beginn, input_end))
+            #ax.set_xlabel("x_label")
+            ax.set_ylabel(f"{a_string}")
+
+    plt.show()
 #"""---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"""             
         # START Einstellungen für das Histogramm   
     if x == 4:
         choosen_merged.hist(column=f"{save_string}")
+        # anzeigen des Mittelwertes in das Diagramm
+        plt.axvline(choosen_merged[save_string].mean(), color='k', linestyle='dashed', linewidth=1)
+        min_ylim, max_ylim = plt.ylim()
+        plt.text(choosen_merged[save_string].mean(), max_ylim*0.7, 'Mean: {:.2f}'.format(choosen_merged[save_string].mean()))
         plt.show()
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#

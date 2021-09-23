@@ -71,7 +71,7 @@ def visualizeData():
     data = pt.getSelectedDataFrame()
 
     if data.empty:
-        ttk.messagebox.showerror("Data Visualization", "No Data Selected.")
+        messagebox.showerror("Data Visualization", "No Data Selected.")
         return
 
     # To plot the charts and bars we need numerical values only
@@ -150,6 +150,7 @@ def merge_df():
     merged_df = pd.merge(df_date, df_gui , left_index=True, right_index=True)
     gap = find_datagap(merged_df, stringChoosen)
     print(gap)
+    print(merged_df)
     first_gap_date = gap["gap_dates"].iloc[0]
     last_gap_date = gap["gap_dates"].iloc[1]
     # ändere den text im Output
@@ -195,6 +196,10 @@ def VisualDown():
         # Liniendiagramm
         visual_method_dynamic(2,axeTitle,data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
 
+    elif (opt == "4"):
+        # Balkendiagramm
+        visual_method_dynamic(5,axeTitle,data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
+
     elif (opt == "5"):
         # Boxplot
         visual_method_dynamic(3,axeTitle,data, a, stringChoosen, save_number, save_day, save_date_start, save_date_end)
@@ -210,6 +215,9 @@ def reset_menu():
     var_info3.set("None")
     var_info4.set("None")
     var_info5.set("None")
+   
+
+
 
 
 
@@ -230,7 +238,7 @@ def change_text():
 # GUI-Widgets einrichten
 root = Tk()
 # Titelname des Fensters
-root.title("static_py")
+root.title("Messdatenvisualisierungssoftware")
 # einstellen der Fenstergröße / wenn nicht angegeben wird das Fenster jeweils angepasst
 #root.minsize(600, 600)
 #root.maxsize(600, 600)
@@ -278,35 +286,35 @@ infoLabel_do1.grid(column=2, row=0, padx=5, pady=5)
 KalenderBtn = ttk.Button(fr, text="Datensatz", command=open_datensatz)
 KalenderBtn.grid(column=2, row=1, padx=5, pady=5)
 
-#---------------------------------------------------------------------------------------------#
-# erstellen ein neuen Frame / rechts
-fr = ttk.LabelFrame(über_Frame, text="Status")
-fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
-#---------------------------------------------------------------------------------------------#
+# #---------------------------------------------------------------------------------------------#
+# # erstellen ein neuen Frame / rechts
+# fr = ttk.LabelFrame(über_Frame, text="Status")
+# fr.pack(side=LEFT,anchor=SW, padx=10, pady=10)
+# #---------------------------------------------------------------------------------------------#
 
-fr2 = ttk.Frame(fr)
-fr2.pack(side=TOP,anchor=E, padx=5, pady=5)
+# fr2 = ttk.Frame(fr)
+# fr2.pack(side=TOP,anchor=E, padx=5, pady=5)
 
-checkDate = ttk.Label(fr2, text="Zeitraum:")
-checkDate.pack(side=LEFT)
+# checkDate = ttk.Label(fr2, text="Zeitraum:")
+# checkDate.pack(side=LEFT)
 
-#CheckVarDate=BooleanVar()
-checkbuttondate= ttk.Checkbutton(fr2)
-checkbuttondate.pack(side=LEFT)
+# #CheckVarDate=BooleanVar()
+# checkbuttondate= ttk.Checkbutton(fr2)
+# checkbuttondate.pack(side=LEFT)
 
-# box_date = Entry(fr2, width=2)
-# box_date.configure({"background": "red"})
-# box_date.pack(side=LEFT)
+# # box_date = Entry(fr2, width=2)
+# # box_date.configure({"background": "red"})
+# # box_date.pack(side=LEFT)
 
-fr2 = ttk.Frame(fr)
-fr2.pack(side=TOP,anchor=E, padx=5, pady=5)
+# fr2 = ttk.Frame(fr)
+# fr2.pack(side=TOP,anchor=E, padx=5, pady=5)
 
-checkData = ttk.Label(fr2, text="Datensatz:")
-checkData.pack(side=LEFT)
+# checkData = ttk.Label(fr2, text="Datensatz:")
+# checkData.pack(side=LEFT)
 
-CheckVarData=BooleanVar()
-checkbuttondata= ttk.Checkbutton(fr2)
-checkbuttondata.pack(side=LEFT)
+# CheckVarData=BooleanVar()
+# checkbuttondata= ttk.Checkbutton(fr2)
+# checkbuttondata.pack(side=LEFT)
 #---------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------#
 # neues übergeordnetes Frame

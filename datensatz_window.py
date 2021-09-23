@@ -34,6 +34,10 @@ def on_click_temp():
     global stringChoosen
     global save_number
     global axeTitle
+    # flagge um die Buttons im menu zu aktievieren
+    global flag2
+    flag2 = True
+
     # übergebe den Titel für die Y-Achse
     axeTitle = "Temperatur"
     # setzen des Hackens im Menü Fenster
@@ -43,6 +47,7 @@ def on_click_temp():
     stringChoosen = val_temp
     save_number = get_string_number(stringChoosen)
     #übergege den column in ein neue DataFrame
+    print(temp_time)
     df_gui = temp_time[f"{val_temp}"]
     df_gui = pd.DataFrame(data=df_gui)
     # entferne für die Anzeigetabelle die NaN-Werte
@@ -56,6 +61,9 @@ def on_cklick_humi():
     global stringChoosen
     global save_number
     global axeTitle
+    # flagge um die Buttons im menu zu aktievieren
+    global flag2
+    flag2 = True
     # übergebe den Titel für die Y-Achse
     axeTitle = "Luftfeuchtigkeit"
     # setzen des Hackens im Menü Fenster
@@ -66,6 +74,7 @@ def on_cklick_humi():
     stringChoosen = val_humi
     save_number = get_string_number(stringChoosen)
     df_gui = humi_time[f"{val_humi}"]
+    print(humi_time)
     df_gui = pd.DataFrame(data=df_gui)
     df_humi_clear = df_gui.dropna()
     buttontemp['state'] = tk.DISABLED

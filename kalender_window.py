@@ -59,8 +59,9 @@ def df_filter_date():
     global save_day
     global save_date_start
     global save_date_end
-    # setzen des hackens im Menu Fenster
-    #CheckVarDate.set(True)
+    # flagge um die Buttons im menu zu aktievieren
+    global flag1
+    flag1 = True
 
 
     df_date = choose_date_gui(saveFirstDate, saveLastDate)
