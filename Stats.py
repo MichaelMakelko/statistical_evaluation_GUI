@@ -25,10 +25,12 @@ from datensatz_window import open_datensatz
 from statistik_window import open_statistik
 
 
-
+browse_flag = False
 # auswählen einer Datei / wird jedoch nicht benötigt da ich DataFrames verwenden möchte / oder ich erweitere meinen bestehenden Code und speichere die DataFrames in .csv oder excel-dateien
 def browse():
+    global browse_flag
     name = str(fd.askopenfilename(filetypes=[('Excel/CSV Files', '*.xlsx; *xls; *.csv')]))
+    browse_flag = True
     # If file is selected
     if (name != ""):
         messagebox.showinfo("Selected File: ", name)
@@ -64,7 +66,7 @@ def enableVis():
     btnVisual['state'] = tk.NORMAL
 
 
-# Funktion um die Diagramme darzustellen
+# Funktion um die Diagramme darzustellen die Hochgeladen wurden mittels "Browse Taste"
 def visualizeData():
     # Get the dataset and the visualization option
     opt = str(option.get())
@@ -80,7 +82,7 @@ def visualizeData():
     # Getting the columns which contain numeric values
     cols = data.columns.tolist()
     if (len(cols) < 2):
-        ttk.messagebox.showerror("Insufficient Data", "Please Select Minimum Two Columns.")
+        ttk.messagebox.showerror( "Wählen Sie mindestends 2 Spalten aus um ein Diagramm zu erstellen.")
         return
 
     for col in cols:
@@ -173,6 +175,17 @@ def merge_df():
 
 # Visualisierungsfunktion von DataFrames aus prep_stats
 def VisualDown():
+
+    # falls der Datensatz hochgeladen ist und in der Tabelle Zeilen ausgewählt sind soll in die folgende Funktion gesprungen werden.
+    ############################################################################################
+    if browse_flag == True:
+        visualizeData()
+        # diese python funktion soll jetzt verlassen werden und nicht weiter ausgeführt
+        return None
+    ############################################################################################
+
+    # falls die Datenbankdaten runtergeladen werden wird folgender Code ausgeführt
+
     from prep_stats import visual_method_dynamic
     # stringChoosen übergibt das ausgewählte column als string
     from datensatz_window import stringChoosen, save_number, axeTitle
