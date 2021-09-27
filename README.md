@@ -2,7 +2,7 @@
 
 ## Software-Fenster
 
-<img src="Software_Hauptmenu.PNG" width="300"> <img src="images/Software_Kalender.PNG" width="200"> <img src="images/Software_Datensatz.PNG" width="250"> <img src="images/Software_Statistik.PNG" width="200">
+<img src="images/Software_Hauptmenu.PNG" width="300"> <img src="images/Software_Kalender.PNG" width="200"> <img src="images/Software_Datensatz.PNG" width="250"> <img src="images/Software_Statistik.PNG" width="200">
 
 ## Anleitung
 
@@ -23,4 +23,14 @@
 ## Visualisierungen
 rohen Datensatz visualisieren
 
-<img src="streuungsdiagramm.PNG" width="300"> <img src="liniendiagramm.PNG" width="300"> <img src="Histogramm.PNG" width="300"> <img src="boxplot.PNG" width="300">
+<img src="images/streuungsdiagramm.PNG" width="200"> <img src="images/liniendiagramm.PNG" width="200"> <img src="images/Histogramm.PNG" width="200"> <img src="images/boxplot.PNG" width="200">
+
+statistisches Verfahren auf den Datensatz anwenden           
+
+<img src="images/statistische_Verfahren.PNG" width="500">    
+
+Boxplot-Auflösung einstellen
+
+<img src="images/boxplot_auflösungen.PNG" width="500">
+
+
