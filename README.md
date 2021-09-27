@@ -20,3 +20,7 @@
 1. roh, mit den Visualisierungsmöglichkeiten im Hauptmenü, darzustellen.
 2. ein statistisches Verfahren auf den Datnesatz anzuwenden und anhand eines Liniendiagramms darzustellen
 2
+## Visualisierungen
+rohen Datensatz visualisieren
+
+<img src="streuungsdiagramm.PNG" width="300"> <img src="liniendiagramm.PNG" width="300"> <img src="Histogramm.PNG" width="300"> <img src="boxplot.PNG" width="300">
