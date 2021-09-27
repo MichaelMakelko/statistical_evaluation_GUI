@@ -27,36 +27,37 @@ import sqlalchemy # Bibliothek: um eine sogennanten wieder aufrufbaren logger zu
 # um das einlesen der config.ini Datei zu ermöglichen
 import configparser
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
+########################################
+########################################
 #Datenbank Verbindung herstellen
 
 # Deklarierung der config Funktion
-#config = configparser.ConfigParser()##########################################################################################################################################################
+#config = configparser.ConfigParser()
 # auslesen der config.ini Datei
-#config.read('config.ini')####################################################################################################################################################################
+#config.read('config.ini')
 
 # folgende funktion
-#def mysql_logger():#############################################################################################################################################################################
+#def mysql_logger():
     # verwendet den Inhalt der config.ini Datei 
     # Syntax um auf die Variablen in der Datei zuzugreifen: config['Überschrift']['variable'] 
-#    return mysql.connector.connect(host = config['mysqlDB']['host'],################################################################################################################################
-#   user = config['mysqlDB']['user'],################################################################################################################################
-#    passwd = config['mysqlDB']['pass'],################################################################################################################################
-#    db = config['mysqlDB']['db'])################################################################################################################################
+#    return mysql.connector.connect(host = config['mysqlDB']['host'],
+#   user = config['mysqlDB']['user'],
+#    passwd = config['mysqlDB']['pass'],
+#    db = config['mysqlDB']['db'])
 
 # eine Verbindungsvariable deklarieren, um sich jedes Mal in die Datenbank einzuloggen
-#connection = mysql_logger()##################################################################################################################################################################
+#connection = mysql_logger()
 # Maus erstellen / um sich in der Datnebank bewegen zu können
-#cursor = connection.cursor()#################################################################################################################################################################
+#cursor = connection.cursor()
 
 # SQLAlchemy Engine / ermöglicht das automatische runterladen einer Tabelle in einen gesamten DataFrame (pd.read_sql)
 # logger Engine erstellen / string wird aus der config.ini bezogen
-#engine = sqlalchemy.create_engine(config['engine']['log'])###################################################################################################################################
+#engine = sqlalchemy.create_engine(config['engine']['log'])
 
-# folgender Abschnitt lädt alle Daten von dem __schema__: sa_makelko / __Tabelle__: Raummonitoring runter
+# folgender Abschnitt lädt alle Daten aus der Datenbank
 # lädt alle columns aus der Tabelle Raummonitoring ein einen gesamtes DataFrame
 # eine "log"-engine aus der SQLAlchemy ermöglicht auto. runterladen mehrere Tabellen
-#df = pd.read_sql("SELECT * FROM Raummonitoring", con = engine)################################################################################################################################
+#df = pd.read_sql("SELECT * FROM Raummonitoring", con = engine)
 
 # funktion zum runterladen des DataFrames in eine CSV
 #df.to_csv("C:/Users/Benutzt/Desktop/DatabaseData.csv", encoding="utf-8")
@@ -64,14 +65,16 @@ import configparser
 
 ## shows all columns in schema raummonitoring 
 # selecting everything with * and set not limit with LIMIT 0 
-#cursor.execute("SELECT * FROM Raummonitoring LIMIT 0")#####################################################################################################################################
+#cursor.execute("SELECT * FROM Raummonitoring LIMIT 0")
 # create a list from columns in Raummonitoring
-#column = cursor.description################################################################################################################################################################
+#column = cursor.description
 # transform list to pandas dataframe
-#df_column = pd.DataFrame(column)############################################################################################################################################################
+#df_column = pd.DataFrame(column)
 
 # trennen der Verbindung zur Datenbank
-#connection.close()##########################################################################################################################################################################
+#connection.close()
+##########################################################
+##########################################################
 
 # Aufbereiten des Datensatzes
 ## Gruppieren der Datenframes in (_0/_t/_r)
@@ -862,7 +865,7 @@ def visual_method_dynamic(x , a_string, choosen_merged, a_int, save_string, pick
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-
+### Aufgrund der GUI nicht mehr benötigt.
 # main
 
 # # folgende Funktion dient zur Auswahl einer Tabelle aus der Datenbank
