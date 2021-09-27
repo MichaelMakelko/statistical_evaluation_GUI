@@ -6,15 +6,15 @@
 
 ## Anleitung
 
-###
+_______________________
 Datei: prep_stats
 Zeile 33 - 61
 Diese Zeilen stellen die Datenbankverbingung mittels einer config.ini Datei her.
-###
+_______________________
 um Rechenzeit zu sparen wurden diese Zeilen auskommentiert und eine .csv Datei, die die Datenbanktabelle beinhaltet, ausgelesen
 Datei: prep_stats
 Zeile 84
-###
+_______________________
 
 #### Auswahl eines Datensatzes
 1. Luftfeuchtigkeit oder Temperaturdaten auswählen
