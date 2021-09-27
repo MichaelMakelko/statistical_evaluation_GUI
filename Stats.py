@@ -31,44 +31,42 @@ def browse():
     global browse_flag
     name = str(fd.askopenfilename(filetypes=[('Excel/CSV Files', '*.xlsx; *xls; *.csv')]))
     browse_flag = True
-    # If file is selected
+    # Wenn die Datei ausgewählt ist
     if (name != ""):
         messagebox.showinfo("Selected File: ", name)
         # gehe in die funktion readFile()
         readFile(name)
 
 
-# Reading the file
+# lesen der Datei
 def readFile(loc):
-    # Object of pandas table
     global pt
-    # Read Excel File
+    # lesen der excel Datei
     if (loc.endswith('.xlsx') or loc.endswith('.xls')):
         # ausgewählte Datei in ein DataFrame umschreiben
         df = pd.read_excel(loc)
-        # Put the data in the table
+        # Daten in die pandas Tabelle einfügen
         pt = Table(frame, dataframe=df, showstatusbar=True, height=200)
         pt.show()
     # Read CSV File
     elif loc.endswith('.csv'):
         # ausgewählte Datei in ein DataFrame umschreiben
         df = pd.read_csv(loc)
-        # Put the data in the table
+        # Daten in die pandas Tabelle einfügen
         pt = Table(frame, dataframe=df, showstatusbar=True, height=200)
         pt.show()
 
-    # Draw the table in case multiple files are being opened using the application
+    # Zeichnen Sie die Tabelle, wenn mehrere Dateien mit der Anwendung geöffnet werden
     pt.redraw()
 
-# Enable the Visualize button when any radio button is pressed
+# Aktivieren Sie die Schaltfläche Visualisieren, wenn eine beliebige Optionsschaltfläche gedrückt wird.
 def enableVis():
-    #if (btnVisual['state'] == tk.DISABLED):
     btnVisual['state'] = tk.NORMAL
 
 
 # Funktion um die Diagramme darzustellen die Hochgeladen wurden mittels "Browse Taste"
 def visualizeData():
-    # Get the dataset and the visualization option
+    # Abrufen des Datensatzes und der Visualisierungsoption
     opt = str(option.get())
     data = pt.getSelectedDataFrame()
 
@@ -76,10 +74,10 @@ def visualizeData():
         messagebox.showerror("Data Visualization", "No Data Selected.")
         return
 
-    # To plot the charts and bars we need numerical values only
+    # Für die Darstellung der Diagramme und Balken benötigen wir nur numerische Werte
     numericCols = []
 
-    # Getting the columns which contain numeric values
+    # Abrufen der Spalten, die numerische Werte enthalten
     cols = data.columns.tolist()
     if (len(cols) < 2):
         ttk.messagebox.showerror( "Wählen Sie mindestends 2 Spalten aus um ein Diagramm zu erstellen.")
@@ -91,7 +89,7 @@ def visualizeData():
         if (dt == int or dt == float):
             numericCols.append(col)
 
-    # Visualizing data according to the option
+    # Visualisierung von Daten nach der Option
     if (opt == "1"):
         # Streuungsdiagramm
         x = data[numericCols[0]].tolist()
@@ -469,8 +467,6 @@ fr.pack(side=TOP, anchor=SW, padx=10, pady=10)
 # Beenden Taste erstellen
 btnQuit = ttk.Button(fr, text="Beenden", command=root.destroy)
 btnQuit.grid()
-##################################################################################################################################################
-################################################################################################################################################## PROGRAMMIEREN SODASS DIE TABELLE IN EINEM NEUEN FENSTER ANGEZEIGT WIRD
 # Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat, in einem Fenster was eingebettet wird.
 #---------------------------------------------------------------------------------------------#
 frame = ttk.Frame(root)
