@@ -18,17 +18,17 @@ _______________________
 
 #### Auswahl eines Datensatzes
 1. Luftfeuchtigkeit oder Temperaturdaten auswählen
-2. mit der Taste "Bestätigen" Tase loggen sie den Datensatz
+2. Mit dem Button "Bestätigen" loggen Sie den Datensatz
 
 #### Auswahl eines Zeitraums
-1. wählen Sie den Beginn und bestätigen sie das Datum mit der "Bestätigen"-Taste
-2. wählen Sie das Ende des Zeitraums und bestätigen sie das Datum mit der "Bestätigen"-Taste
-3. loggen Sie den Datensatz mit der Taste "Erzeuge Tabelle"
+1. Wählen Sie den Beginn und bestätigen Sie das Datum mit dem "Bestätigen"-Button
+2. Wählen Sie das Ende des Zeitraums und bestätigen Sie das Datum mit dem "Bestätigen"-Button
+3. Loggen Sie den Datensatz mit dem Button "Erzeuge Tabelle"
 
 #### Die geloggten Tabellen müssen jetzt in dem Hauptmenü mit der Taste "Tabellen zusammenfügen" zusammengefügt werden.
 #### Nun besteht die möglichkeiten den zusammengeführten Datensatz:
-1. roh, mit den Visualisierungsmöglichkeiten im Hauptmenü, darzustellen.
-2. ein statistisches Verfahren auf den Datnesatz anzuwenden und anhand eines Liniendiagramms darzustellen
+1. Roh, mit den Visualisierungsmöglichkeiten im Hauptmenü, darzustellen.
+2. Ein statistisches Verfahren auf den Datnesatz anzuwenden und anhand eines Liniendiagramms darzustellen
 2
 ## Visualisierungen
 rohen Datensatz visualisieren
