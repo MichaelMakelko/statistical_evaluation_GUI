@@ -288,8 +288,8 @@ def heatmap():
     # erstellen einer Tabelle mit füllen der Temperaturwerten / Heatmap Einstellungen
     df = df.pivot(index='hour', columns='dayofyear', values=df.columns[0])
 
-    yticks_spacing = int(pd.Timedelta("2h")/pd.Timedelta("30s"))
-    ax = sns.heatmap(df, yticklabels=yticks_spacing, xticklabels=2, linewidths=.1, linecolor="#222", cmap="icefire")
+    #yticks_spacing = int(pd.Timedelta("2h")/pd.Timedelta("30s"))
+    ax = sns.heatmap(df, yticklabels=2, xticklabels=2, linewidths=.1, linecolor="#222", cmap="icefire")
     plt.title("Heatmap", fontsize = 20) # title with fontsize 20
     plt.xlabel('Tage', fontsize = 15) # x-axis label with fontsize 15
     plt.ylabel('Uhrzeit', fontsize = 15) # y-axis label with fontsize 15
