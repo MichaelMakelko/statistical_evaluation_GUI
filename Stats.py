@@ -12,7 +12,6 @@ from pandastable import Table
 import matplotlib.pyplot as plot
 from scipy.stats import linregress
 from tkcalendar import *
-import tkinter as tk
 from tkinter import ttk
 # Browsing the input file
 from sympy.stats import independent
@@ -104,7 +103,7 @@ def visualizeData():
         x = data[numericCols[0]].tolist()
         plot.hist(x, stacked=False)
         plot.xlabel(numericCols[0])
-        plot.title('Histogram')
+        plot.title('Histogramm')
         plot.show()
     elif (opt == "3"):
         # Liniendiagramm
@@ -114,7 +113,7 @@ def visualizeData():
         plot.plot(x, y)
         plot.xlabel(numericCols[0])
         plot.ylabel(numericCols[1])
-        plot.title('Line Plot')
+        plot.title('Liniendiagramm')
         plot.show()
     elif (opt == "4"):
         # Balkendiagramm
@@ -123,16 +122,9 @@ def visualizeData():
         plot.bar(x, y, width=0.2)
         plot.xlabel(numericCols[0])
         plot.ylabel(numericCols[1])
-        plot.title('Bar Chart')
+        plot.title('Balkendiagramm')
         plot.show()
-    elif (opt == "5"):
-        # Boxplot
-        x = data[numericCols[0]].tolist()
-        y = data[numericCols[1]].tolist()
-        plot.pie(y, labels=x)
-        plot.xlabel(numericCols[0])
-        plot.title('Pie Chart')
-        plot.show()
+    
 
 
 # funktion der Taste "Tablle" um den ausgewählten Zeitraum und den ausgewählten column
@@ -467,8 +459,8 @@ fr.pack(side=TOP, anchor=SW, padx=10, pady=10)
 # Beenden Taste erstellen
 btnQuit = ttk.Button(fr, text="Beenden", command=root.destroy)
 btnQuit.grid()
-# Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat, in einem Fenster was eingebettet wird.
 #---------------------------------------------------------------------------------------------#
+# Das ist der Frame der die TABELLE ausgibt, die man vorher mit Browse eingelesen hat, in einem Fenster was eingebettet wird.
 frame = ttk.Frame(root)
 frame.pack(fill=BOTH)
 #---------------------------------------------------------------------------------------------#
