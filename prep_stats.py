@@ -81,7 +81,7 @@ import configparser
 
 #------------------------------------------------------------------#
 # es wurde für die GUI der Teil mit der Datenbank übersprungen aufgrund der rechenzeit / die Positionen mit vielen "#" in der Zeile müssen wieder eingebetete werden
-df = pd.read_csv("C:/Users/Michael Makelko/Desktop/DatabaseData.csv")
+df = pd.read_csv("C:/Users/Michael Makelko/DatabaseData.csv")
 #------------------------------------------------------------------#
 """
 1. temp_all und humi_all wird aus dem gesamten Dataframe df gefiltert und für sich als eigens DataFrame abgespeichert / alle Temperaturwerte und Feuchtigkeitswerte (ROH) sind abgespeichert
