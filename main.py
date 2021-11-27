@@ -18,10 +18,10 @@ from sympy.stats import independent
 
 
 # importiere Module aus anderen Dateien
-from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
-from kalender_window import open_kalender
-from datensatz_window import open_datensatz
-from statistik_window import open_statistik
+from preperation_data import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
+from calendar_window import open_kalender
+from dataset_window import open_datensatz
+from statistic_window import open_statistik
 
 
 browse_flag = False
@@ -130,9 +130,9 @@ def visualizeData():
 # funktion der Taste "Tablle" um den ausgewählten Zeitraum und den ausgewählten column
 def merge_df():
     # df_date (das ausgewählte datum als DataFrame) erst in der Funktion importieren wenn es benötigt wird!
-    from kalender_window import df_date
-    from datensatz_window import df_gui, stringChoosen
-    from prep_stats import find_datagap
+    from calendar_window import df_date
+    from dataset_window import df_gui, stringChoosen
+    from preperation_data import find_datagap
     global merged_df
     global first_gap_date
     global last_gap_date
@@ -176,11 +176,11 @@ def VisualDown():
 
     # falls die Datenbankdaten runtergeladen werden wird folgender Code ausgeführt
 
-    from prep_stats import visual_method_dynamic
+    from preperation_data import visual_method_dynamic
     # stringChoosen übergibt das ausgewählte column als string
-    from datensatz_window import stringChoosen, save_number, axeTitle
+    from dataset_window import stringChoosen, save_number, axeTitle
     # deklarieren einer variable die sagt ob ein Tag oder Zeitraum gewählt wurde
-    from kalender_window import a, save_day, save_date_start, save_date_end
+    from calendar_window import a, save_day, save_date_start, save_date_end
     # dekalrieren der Variable ob Temperatur oder Luftfeuchtigkeit ausgewählt wurde
     #save_string
 
@@ -220,13 +220,9 @@ def reset_menu():
     var_info5.set("None")
    
 
-
-
-
-
 def change_text():
-    from kalender_window import save_first_date, save_last_date
-    from datensatz_window import stringChoosen
+    from calendar_window import save_first_date, save_last_date
+    from dataset_window import stringChoosen
     var_info1.set(save_first_date)
     var_info2.set(save_last_date)
     var_info3.set(stringChoosen)
