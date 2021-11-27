@@ -1,6 +1,6 @@
 
 from tkinter import *
-from prep_stats import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
+from preperation_data import temp_time, df_timestamp, choose_date_gui, commpare_date_input, firstLast_temp_df, firstLast_humi_df, first_string, last_string
 from tkinter import messagebox
 import pandas as pd
 from pandastable import Table
