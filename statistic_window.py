@@ -155,15 +155,15 @@ def Median():
 # diese Funktion importiert den aktuellen zusammengelegten DataFrame
 # eine andere Mögliochkeit direkter zu importieren besteht nicht
 def df_for_statistic():
-    from kalender_window import df_date
-    from datensatz_window import df_gui
+    from calendar_window import df_date
+    from dataset_window import df_gui
     merged_df = pd.merge(df_date, df_gui , left_index=True, right_index=True)
     print(merged_df)
     return merged_df
     
 
 def boxStunden():
-    from datensatz_window import axeTitle
+    from dataset_window import axeTitle
     df = df_for_statistic()
     df["hour"] = df.longtime.dt.hour
     ax= sns.boxplot(data=df, x="hour", y=df.columns[1])
@@ -172,7 +172,7 @@ def boxStunden():
     plt.show()
 
 def boxTage():
-    from datensatz_window import axeTitle
+    from dataset_window import axeTitle
     df = df_for_statistic()
     df["day"] = df.longtime.dt.day
     ax = sns.boxplot(data=df, x="day", y=df.columns[1])
@@ -181,7 +181,7 @@ def boxTage():
     plt.show()
 
 def boxMonate():
-    from datensatz_window import axeTitle
+    from dataset_window import axeTitle
     df = df_for_statistic()
 
     df["month"] = df.longtime.dt.month
