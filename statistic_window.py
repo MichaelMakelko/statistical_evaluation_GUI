@@ -44,14 +44,10 @@ import seaborn as sns
 def maximum():
     # immer wenn eine Funktion angesprochen wird mit klammer () angesprochen wenn nichts übergeben wird / sonst unkorrekte ausgaben
     df = df_for_statistic()
-    print("import df:")
-    print(df)
     df_new = (df.groupby(pd.Grouper(key="longtime",freq="D"))
             .agg({df.columns[1]: np.max})
             .reset_index())
-    print(df_new)
     df_new = pd.DataFrame(data= df_new)
-    print(df_new)
 
     # Visualiesierung
     ####
@@ -73,7 +69,6 @@ def minimum():
             .agg({df.columns[1]: np.min})
             .reset_index())
 
-    print(df_new)
     df_new = pd.DataFrame(data= df_new)
 
     # Visualiesierung
@@ -94,7 +89,6 @@ def mittelwert():
     df = df_for_statistic()
     df_new = (df.groupby(pd.Grouper(key="longtime",freq="D")).agg({df.columns[1]: np.mean}).reset_index())
 
-    print(df_new)
     df_new = pd.DataFrame(data= df_new)
 
     # Visualiesierung
@@ -116,7 +110,6 @@ def standartabweichung():
             .agg({df.columns[1]: np.std})
             .reset_index())
 
-    print(df_new)
     df_new = pd.DataFrame(data= df_new)
 
     # Visualiesierung
@@ -136,7 +129,6 @@ def Median():
     df = df_for_statistic()
     df_new = (df.groupby(pd.Grouper(key="longtime",freq="D")).agg({df.columns[1]: np.median}).reset_index())
 
-    print(df_new)
     df_new = pd.DataFrame(data= df_new)
 
     # Visualiesierung
@@ -158,7 +150,6 @@ def df_for_statistic():
     from calendar_window import df_date
     from dataset_window import df_gui
     merged_df = pd.merge(df_date, df_gui , left_index=True, right_index=True)
-    print(merged_df)
     return merged_df
     
 
@@ -315,8 +306,6 @@ def heatmap():
     # ax = sns.heatmap(df, xticklabels=xticks_spacing, yticklabels=30)
     # plt.yticks(rotation=0)
     # plt.show()
-    
-    print(df)
 
 
 def open_statistik():

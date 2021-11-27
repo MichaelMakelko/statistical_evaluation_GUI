@@ -258,16 +258,12 @@ humi_value_f.sort(key=str)
 df_temp_value = pd.concat(temp_value_f, axis=1)
 df_humi_value = pd.concat(humi_value_f, axis=1)
 
-print(df_temp_value)
-
 #im nächsten Abschnitt wird jetzt das gesamtte Dataframe der aufbereiteten Daten mit der aufgenommenen Zeit zusammengelegt. Dabei wird nur auf den Index geschaut, das heißt dass der Zeitstempel mit dem jeweiligen Index auch an den zugehörigen Index im Dataframe hinterlegt wird.
 # legt die aufbereiteten Daten mit den zugehörigen Zeitstempeln zusammen
 # gesamtes Dataframe der Temperatursensoren
 temp_time = pd.merge(utc_stamp,df_temp_value, left_index=True, right_index=True)
 # gesamtes Dataframe der Luftfeuchtigkeitssensoren
 humi_time = pd.merge(utc_stamp,df_humi_value, left_index=True, right_index=True)
-
-print(temp_time)
 
 # Kalender erstellen
 # folgender Abschnitt dient zu erstellung eines Kalenders in Tag/Monat/Jahr/Stunde/Minute separat in Spalten getrennt wird. Behält jedoch den Uhrsprünglichen Index bei.
@@ -486,7 +482,6 @@ def statistic_funcion_dynamic(optionStat, merged_df, save_string):
         
         
         df= pd.DataFrame({"Statistische Verfahren" : ["Median","Standartabweichung","ahrithmetischer Mittelwert","oberes Quantil", "unteres Quantil"], "Ergebniss" : [ergebnis2, ergebnis3, ergebnis4, ergebnis5, ergebnis1]})
-        print(df)
         #return(df)
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -587,21 +582,14 @@ lastIndexHumi =humi_time.index[-1]
 firstIndexTemp = temp_time.index[0]
 firstIndexHumi = humi_time.index[0]
 
-print(firstIndexTemp)
-print(lastIndexTemp)
-
 # das erste und letzte Datum in ein Datafrmae speichern
 df_first_date = pd.DataFrame(data=firstLast_temp_df, columns=["longtime"], index=[firstIndexTemp])
 df_last_date = pd.DataFrame(data=firstLast_temp_df, columns=["longtime"], index=[lastIndexTemp])
-
-print("das ist das datum bevor es zum string wird: ", df_first_date)
 
 # erstes Datum welches in die Datenbank geschrieben wurde in einen String umwandeln
 first_string = df_first_date.to_string(header=False, index=False, index_names=False)
 # letztes Datum welches in die Datenbank geschrieben wurde in einen String umwandeln
 last_string = df_last_date.to_string(header=False, index=False, index_names=False)
-
-print("das sol der string sein: ",first_string)
 
 #################################################################################################################################################################
 # Folgender part dient jetzt den ersten und letzten string (die das Datum und Uhrzeit beinahlten) aufzubereiten                                                 # 

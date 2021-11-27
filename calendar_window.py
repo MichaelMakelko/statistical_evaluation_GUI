@@ -19,7 +19,6 @@ def grab_date_first():
     save_first_date = saveFirstDate
     #aufgrund von date_pattern in dem Calnder kann das Format mit to_datetime ermittelt werden
     saveFirstDate = pd.to_datetime(saveFirstDate, format="%d-%m-%Y")
-    print("FirstDate nach pandas1: ", saveFirstDate)
     fi = firstLast_temp_df["longtime"].iloc[0]
     la = firstLast_temp_df["longtime"].iloc[1]
     # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
@@ -41,7 +40,6 @@ def grab_date_last():
     # wandele das Datum von str in ein Timestamp um (für den vergelich notwendig)
     #aufgrund von date_pattern in dem Calnder kann das Format mit to_datetime ermittelt werden
     saveLastDate = pd.to_datetime(saveLastDate, format="%d-%m-%Y")
-    print("lastDate: ", saveLastDate)
     fi = firstLast_temp_df["longtime"].iloc[0]
     la = firstLast_temp_df["longtime"].iloc[1]
     # prüfe ob das ausgewählte Datum in der Datenbank aufgenommen wurde
@@ -63,9 +61,7 @@ def df_filter_date():
     global flag1
     flag1 = True
 
-
     df_date = choose_date_gui(saveFirstDate, saveLastDate)
-    print(df_date)
 
     # deklarieren einer variable die den Tag widergibt wenn der Zeitraum nur als Tag gewählt wurde
     save_day = saveFirstDate

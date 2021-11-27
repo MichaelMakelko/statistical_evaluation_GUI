@@ -141,8 +141,6 @@ def merge_df():
 
     merged_df = pd.merge(df_date, df_gui , left_index=True, right_index=True)
     gap = find_datagap(merged_df, stringChoosen)
-    print(gap)
-    print(merged_df)
     first_gap_date = gap["gap_dates"].iloc[0]
     last_gap_date = gap["gap_dates"].iloc[1]
     # ändere den text im Output
