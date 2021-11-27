@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import ttk
 
 # importiere Module aus andere Dateien
-from prep_stats import temp_time, humi_time
+from preperation_data import temp_time, humi_time
 
 def quit(x):
     x.destroy()
