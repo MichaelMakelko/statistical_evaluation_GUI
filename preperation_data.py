@@ -96,158 +96,163 @@ INFO:
 - _r: Receive Zeitstempel (Wann wurde in Die Datenbank geschrieben)
 """
 
-# 1. Trennen aus dem DataFrame die Columns Temperatur und Luftfeuchtigkeit
-temp_all= df.filter(like="temperature", axis=1) # axis=1 means along "columns" / =0 along "rows"
-humi_all= df.filter(like="humidity", axis=1)
+class PreperationData:
 
-# 2. filtering all columns with xxxx values temperature and humidity
-humi_utc_r = humi_all.filter(like="_r", axis=1)
-temp_utc_r = temp_all.filter(like="_r", axis=1)
+    # DataFrame der Messwerte
+    humi_all = pd.DataFrame()
+    temp_all = pd.DataFrame()
+    stamp = pd.DataFrame() # alle Zeitstempel
 
-# 2. filtering all columns with utc values temperature and humidity
-humi_utc_t = humi_all.filter(like="_t", axis=1)
-temp_utc_t = temp_all.filter(like="_t", axis=1)
+    humi_utc_r = []
+    temp_utc_r = []
+    humi_utc_t = []
+    temp_utc_t = []
 
-# 3. Filtern die sauberen Temperatur Messwerte 
-# in diesem Part sollen die sauberen Messwerte gefiltert werden. Es wird immer von innen nach außen gearbeitet.
-# aus dem Dataframe temp_all wird eine Liste erstellt die, die columns beinhaltet mit _r. Weiter werden die columns aus der erstellten Liste aus dem Dataframe entfernt und in ein neuen df übergeben. 
-temp_value_filter1 = temp_all[temp_all.columns.drop(list(temp_all.filter(like="_r")))]
-# gleiches vorgehen nur das jetzt alle column namen mit _t aus dem Dataframe entfernt werden und nurnoch saubere Messwerte in temp_value vorhanden sind
-temp_value = temp_value_filter1[temp_value_filter1.columns.drop(list(temp_value_filter1.filter(like="_t")))]
+    def __init__(self) -> None:
+        pass
 
-# 3. Filtern die sauberen Luftfeuchtigkeit Messwerte
-humi_value_filter1 = humi_all[humi_all.columns.drop(list(humi_all.filter(like="_r")))]
-humi_value = humi_value_filter1[humi_value_filter1.columns.drop(list(humi_value_filter1.filter(like="_t")))]
+    def GroupData(self, df):
+        # 1. Trennen aus dem DataFrame die Columns Temperatur und Luftfeuchtigkeit
+        self.temp_all= df.filter(like="temperature", axis=1) # axis=1 means along "columns" / =0 along "rows"
+        self.humi_all= df.filter(like="humidity", axis=1)
 
-# Filtern den longtime column
-stamp = df.filter(like="longtime", axis=1)
+        # 2. filtering all columns with xxxx values temperature and humidity
+        humi_utc_r = self.humi_all.filter(like="_r", axis=1)
+        temp_utc_r = self.temp_all.filter(like="_r", axis=1)
 
-## filtern der NaN-Werte
-#f"{<variable>}" has brought me the desired result / safes the Dataframe (column) and places as new Dataframe with folowing syntax   
-#__WICHTIG!__ -> Syntax von f"{x}" füllt die vorher abgespeicherte variable x in ein String! Das angesprochene x in jedem durchlauf beinhaltet den "column" namen.
-# Es musste eine eigen Funktion erstellt werden die von einem DataFrame jedes einzelne Column durchläuft um die NaN Werte zu entferne! / da wenn man diese auf einen DataFrame anwendet wird die gesamte Tabelle gelsöcht aufgrund NaN in jedee Spalte Vorkommen und es aus dem Grundverständnis der Funktion alle entfernet jedoch die gesamte Zeile entfernt!!! auch wenn in der Nächsten Spalte ein Werte in der selben Zeile steht.
+        # 2. filtering all columns with utc values temperature and humidity
+        humi_utc_t = self.humi_all.filter(like="_t", axis=1)
+        temp_utc_t = self.temp_all.filter(like="_t", axis=1)
 
-# generiert für temp. und luftf. listen in ..._r ..._t ..._0 in die folgenden listen
-# Lufetfeuchtigkeits Listen
-humi_df_list=[] # relevante Liste für Luftfeuchtigkeits Daten
-humi_df_utc_r=[]
-humi_df_utc_t=[]
+    def FilterData(self, temp_all, humi_all):
 
-# die for-Schleife durchläuft die columns von dem Dataframe: humi_value in der Variable i
-for i in humi_value:
-    # speichert in x ein neues DataFrame mit nur den Werten aus dem column i aus humi_value 
-    x = pd.DataFrame(humi_value[f"{i}"])
-    # löscht in dem column die Zeile mit NaN_werten
-    x = x.dropna()
-    # fügt abschließend das Dataframe in die liste ein
-    humi_df_list.append(x)
+        # 3. Filtern die sauberen Temperatur Messwerte 
+        # in diesem Part sollen die sauberen Messwerte gefiltert werden. Es wird immer von innen nach außen gearbeitet.
+        # aus dem Dataframe temp_all wird eine Liste erstellt die, die columns beinhaltet mit _r. Weiter werden die columns aus der erstellten Liste aus dem Dataframe entfernt und in ein neuen df übergeben. 
+        temp_value_filter1 = temp_all[temp_all.columns.drop(list(temp_all.filter(like="_r")))]
+        # gleiches vorgehen nur das jetzt alle column namen mit _t aus dem Dataframe entfernt werden und nurnoch saubere Messwerte in temp_value vorhanden sind
+        temp_value = temp_value_filter1[temp_value_filter1.columns.drop(list(temp_value_filter1.filter(like="_t")))]
 
-for i in humi_utc_t:
-    x = pd.DataFrame(humi_utc_t[f"{i}"])
-    x = x.dropna()
-    humi_df_utc_t.append(x)
+        # 3. Filtern die sauberen Luftfeuchtigkeit Messwerte
+        humi_value_filter1 = humi_all[humi_all.columns.drop(list(humi_all.filter(like="_r")))]
+        humi_value = humi_value_filter1[humi_value_filter1.columns.drop(list(humi_value_filter1.filter(like="_t")))]
 
-for i in humi_utc_r:
-    x = pd.DataFrame(humi_utc_r[f"{i}"])
-    x = x.dropna()
-    humi_df_utc_r.append(x)
+        # Filtern den longtime column
+        stamp = df.filter(like="longtime", axis=1)
 
-# Temperatur Listen
-temp_df_list = [] # relevante Liste für Temperatur Daten
-temp_df_utc_r = []
-temp_df_utc_t = []
 
-for i in temp_value:
-    x = pd.DataFrame(temp_value[f"{i}"])
-    x = x.dropna()
-    temp_df_list.append(x)
+class FilterFuncion(PreperationData):
 
-for i in temp_utc_r:
-    x = pd.DataFrame(temp_utc_r[f"{i}"])
-    x = x.dropna()
-    temp_df_utc_r.append(x)
+    # generiert für temp. und luftf. listen in ..._r ..._t ..._0 in die folgenden listen
+    # Lufetfeuchtigkeits Listen
+    humi_df_list=[] # relevante Liste für Luftfeuchtigkeits Daten
+    humi_df_utc_r=[]
+    humi_df_utc_t=[]
+    # Temperatur Listen
+    temp_df_list = [] # relevante Liste für Temperatur Daten
+    temp_df_utc_r = []
+    temp_df_utc_t = []
 
-for i in temp_utc_t:
-    x = pd.DataFrame(temp_utc_t[f"{i}"])
-    x = x.dropna()
-    temp_df_utc_t.append(x)
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# FUnktion um Ausreißer zu entfernen
-##########################################################################
-# In der Evaluirung entdeckt das nicht nur Ausreißer entfertn wurden !!! #
-##########################################################################
-def temp_filter(x):
-    # benötigt das importieren der Bibliotheken die in dieser Funktion Verwendung finden
-    from scipy import stats
-    import numpy as np
-    
-    # Für die Spalte wird zunächst der Z-Score jedes Wertes in der Spalte im Verhältnis zum Spaltenmittelwert und zur Standardabweichung berechnet.
-    z_scores = stats.zscore(x)
-    # Dann wird der absolute Z-Score genommen, denn die Richtung spielt keine Rolle, nur wenn er unter dem Schwellenwert liegt
-    abs_z_scores = np.abs(z_scores)
-    filtered_entries = (abs_z_scores < 3)
-    # uhrsprüngliche Dataframe in den Array einfügen
-    new_Frame = x[filtered_entries]
-    return new_Frame
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Ausreißer Funktion 2.0 #
+    def __init__(self):
+        # laden des konstruktors aus der Klasse PreperationData
+        PreperationData.__init__(self)
 
-def filter_2(x, i):
-    q1 = x[i].quantile(0.25) 
-    q3 = x[i].quantile(0.75)
-    iqr = q3 - q1
+    ## filtern der NaN-Werte
+    #f"{<variable>}" has brought me the desired result / safes the Dataframe (column) and places as new Dataframe with folowing syntax   
+    #__WICHTIG!__ -> Syntax von f"{x}" füllt die vorher abgespeicherte variable x in ein String! Das angesprochene x in jedem durchlauf beinhaltet den "column" namen.
+    # Es musste eine eigen Funktion erstellt werden die von einem DataFrame jedes einzelne Column durchläuft um die NaN Werte zu entferne! / da wenn man diese auf einen DataFrame anwendet wird die gesamte Tabelle gelsöcht aufgrund NaN in jedee Spalte Vorkommen und es aus dem Grundverständnis der Funktion alle entfernet jedoch die gesamte Zeile entfernt!!! auch wenn in der Nächsten Spalte ein Werte in der selben Zeile steht.
 
-    df_out = x[(x[i] > (q1 - 1.5 * iqr)) & (x[i] < (q3 + 1.5 * iqr))] #dataframe
-    return df_out
+    def ContFilter(self, humi_value, temp_value):
 
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-##########################
-# filtern von Ausreißern #
-##########################
-# Problem bestand darin, dass kein graph angezeigt wurde aufgrund der gewaltigen änderung des Maßstabes eines Ausßreißers
-# Listen für die Daten ohne Ausreißer
-temp_value_f=[]
-humi_value_f=[]
 
-# Folgende Funktion filtert Ausreißer aus einer Gruppe von Daten
-# läufer durch jede zeile in der Liste der Temperaturdaten 
-for i in range(0, len(temp_df_list), 1): # len() gibt die länge des Datafrmaes als integer zurück / range(start, ende, läufer)
-    # greife auf den df in der Liste zu / und übergebe es auf x
-    x = temp_df_list[i]
-    strSensor = x.columns[0]
-    
-    # fügt jeden Column in die Funktion temp_filter() aus der Datei preparation_data
-    #x_filter=temp_filter(x)
-    new_df = filter_2(x, strSensor)
-    # fügt anschließend die gefilterte Liste einer neuen Liste an
-    temp_value_f.append(new_df)
-    
-for i in range(0, len(humi_df_list), 1):
-    x = humi_df_list[i]
-    strSensor = x.columns[0]
-    #x_filter=temp_filter(x)
-    new_df = filter_2(x, strSensor)
-    humi_value_f.append(new_df)
+        # die for-Schleife durchläuft die columns von dem Dataframe: humi_value in der Variable i
+        for i in humi_value:
+            # speichert in x ein neues DataFrame mit nur den Werten aus dem column i aus humi_value 
+            x = pd.DataFrame(humi_value[f"{i}"])
+            # löscht in dem column die Zeile mit NaN_werten
+            x = x.dropna()
+            # fügt abschließend das Dataframe in die liste ein
+            self.humi_df_list.append(x)
+
+        for i in self.humi_utc_t:
+            x = pd.DataFrame(self.humi_utc_t[f"{i}"])
+            x = x.dropna()
+            self.humi_df_utc_t.append(x)
+
+        for i in self.humi_utc_r:
+            x = pd.DataFrame(self.humi_utc_r[f"{i}"])
+            x = x.dropna()
+            self.humi_df_utc_r.append(x)
+
+        for i in self.temp_value:
+            x = pd.DataFrame(self.temp_value[f"{i}"])
+            x = x.dropna()
+            self.temp_df_list.append(x)
+
+        for i in self.temp_utc_r:
+            x = pd.DataFrame(self.temp_utc_r[f"{i}"])
+            x = x.dropna()
+            self.temp_df_utc_r.append(x)
+
+        for i in self.temp_utc_t:
+            x = pd.DataFrame(self.temp_utc_t[f"{i}"])
+            x = x.dropna()
+            self.temp_df_utc_t.append(x)
+
+
+class ContFilterOutlier(FilterFuncion):
+
+    def __init__(self):
+        FilterFuncion.__init__(self)
+
+    ##########################
+    # filtern von Ausreißern #
+    ##########################
+    # Problem bestand darin, dass kein graph angezeigt wurde aufgrund der gewaltigen änderung des Maßstabes eines Ausßreißers
+    # Listen für die Daten ohne Ausreißer
+    temp_value_f=[]
+    humi_value_f=[]
+
+    # Ausreißer Funktion 2.0 #
+    def filter_2(self, x, i):
+        q1 = x[i].quantile(0.25) 
+        q3 = x[i].quantile(0.75)
+        iqr = q3 - q1
+
+        df_out = x[(x[i] > (q1 - 1.5 * iqr)) & (x[i] < (q3 + 1.5 * iqr))] #dataframe
+        return df_out
+
+    def ContFilter2(self):
+
+        # Folgende Funktion filtert Ausreißer aus einer Gruppe von Daten
+        # läufer durch jede zeile in der Liste der Temperaturdaten 
+        for i in range(0, len(self.temp_df_list), 1): # len() gibt die länge des Datafrmaes als integer zurück / range(start, ende, läufer)
+            # greife auf den df in der Liste zu / und übergebe es auf x
+            x = self.temp_df_list[i]
+            strSensor = x.columns[0]
+            
+            # fügt jeden Column in die Funktion temp_filter() aus der Datei preparation_data
+            #x_filter=temp_filter(x)
+            new_df = self.filter_2(x, strSensor)
+            # fügt anschließend die gefilterte Liste einer neuen Liste an
+            self.temp_value_f.append(new_df)
+            
+        for i in range(0, len(self.humi_df_list), 1):
+            x = self.humi_df_list[i]
+            strSensor = x.columns[0]
+            #x_filter=temp_filter(x)
+            new_df = self.filter_2(x, strSensor)
+            self.humi_value_f.append(new_df)
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 ## Umwandeln der unix-Zeitstempel in Datum/Uhrzeit
 # einen einzelnen Datframe aus "longtime" Daten erstellen
-utc_stamp = stamp["longtime"]
+utc_stamp = PreperationData.stamp["longtime"]
 # dataframe mit den UTC Werten mit folgender funktion in jahr/monat/tag stunde/minute/sekunde konvertieren
 utc_stamp = pd.to_datetime(utc_stamp, unit="ms") # unit einstellen und angeben wie lang der UTC Wert ist um diesen richtig umzurechnen
 # einen zusätzlichen Dataframe erstelllen für den manuellen Kalender
 df_timestamp = pd.DataFrame({"timestamp": utc_stamp})
 
-# Sortieren der Column namen
-####################################################################################################################################################################
-temp_df_list.sort(key=str)
-temp_df_utc_r.sort(key=str)
-temp_df_utc_t.sort(key=str)
-temp_value_f.sort(key=str)
-humi_df_list.sort(key=str)
-humi_df_utc_r.sort(key=str)
-humi_df_utc_t.sort(key=str)
-humi_value_f.sort(key=str)
 
 ## Zusammenfüger der aufbereiteten Daten
 # Messwerte sollen wieder mit dem zugehörigen zeitstempel zusammengelegt werden.
@@ -328,110 +333,6 @@ def showAllHumi(humi_time, humi_value):
         humi_time.plot(x ="longtime", y=f"{i}",kind="scatter", ax=ax ,color="C"+f"{b}")
         b +=1
 
-#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Funktionen
-## Funktion: Auswahl bestimmter Daten aus der Datenbank
-# pick_DataFrame() gibt zurück:
-# - Tempeartur- oder Luftfeuchtigkietsdaten ausgewählt (DataFrame)
-# - ausgewählten Sensor (Series/DataFrame)
-# - Column-namen des Sensors (String)
-
-# filtered values of temperature and humidity /
-# df_temp_value
-# df_humi_value
-# info: got 18 Sensorsets
-
-# 1. wich Data you want ? TempData or HumiData
-# 2. shows the DataFrame of the set / chose wich DataSet you want from the Sensors
-# 3. safes the DataFrame in new working DataFrame
-
-# WIRD NICHT VERWENDET AUFGRUND DES COLUMN
-#############################################################################################################################################################################################
-#############################################################################################################################################################################################
-# def pick_DataFrame():
-#     #global safeDataFrame
-    
-#     # initialisiere globale variablen
-#     global pickd_column_df
-#     global a
-#     global pick_column
-#     global save_string
-#     # x a muss vorher angesprochen werden
-#     x = int
-    
-#     # solange 1 oder 2 nicht eingegeben wird, wird der input() wiederholt
-#     while x != "1" or "2":
-#         # eingabe der zu analisiernenden Tabelle Temperatur(1) oder Luftfeuchtigkeit(2)
-#         x = input("wählen Sie zwischen Temperatur- oder Luftfeuchtigkeitsdaten \n geben Sie (1) für Temperaturdaten ein \n geben Sie (2) für Luftfeuchtigkeitsdaten ein \n bestätigen Sie Ihre eingabe mit Enter \n")
-        
-#         # abfrage der Eingabe
-#         # Übergabe der variablen der ausgewählten liste
-#         if x == "1":
-#             # abspeichern der Liste mit allen Temperatur Sensoren 
-#             safeDataFrame = temp_df_list
-#             # string für das ausgewählte Temperatur Dataframe
-#             a = "Temperatur"
-#             var = df_temp_value
-#             print("Die ausgewählte Kategorie der Daten ist Temperatur")
-#             print("Es werden alle Temperatur-Sensoren aus der Datenbank aufgelistet:")
-#             # sens_counter zählt die vorhandenen Sensoren in der Datenbank
-#             sens_counter = 0
-#             # schleife um die columns in temp_value zu zählen
-#             for i in temp_value.columns:
-#                 sens_counter += 1
-#                 print(i) 
-#             break
-        
-#         # gleiche Erklärung für die Luftfeuchtigkeit
-#         if x == "2":
-#             a = "Luftfeuchtigkeit"
-#             safeDataFrame = humi_df_list
-#             var = df_humi_value
-#             print("Die ausgewählte Kategorie der Daten ist Luftfeuchtigkeit")
-#             print("Es werden alle Luftfeuchtigkeits-Sensoren aus der Datenbank aufgelistet:")
-#             sens_counter = 0
-#             for i in humi_value.columns:
-#                 sens_counter += 1
-#                 print(i)
-#             break
-        
-#         # falls die eingabe nicht 1 oder 2 war ist die eingabe ungültig
-#         else:
-#             print("Die eingabe ist unzulässig")
-            
-                    
-#     # abfrage welcher Sensor ausgewählt werden soll
-#     pick_column = input(("Sie können zwischen "+f"{sens_counter} "+ a +" Sensoren einen Datensatz wählen \n gebe Sie nur die Nummer des Sensors ein und bestätigen Sie mit Enter \n"))
-    
-    
-# #     # auf die Sensoren Begrenzen die vorhanden sind
-# #     flag_sens= False
-# #     while flag_sens != True:
-# #         pick_colum = input("Geben Sie die Nummer des Sensors erneut ein \n")
-        
-# #         if pick_column > sens_counter or pick_column < sens_counter:
-# #             flag_sens = False
-# #         else:
-# #             print("Dieser Sensor existiert nicht")
-# #             flag_sens = True
-    
-    
-    
-    
-#     # dementsprechend wird dieses column ausgewählt
-#     pickd_column_df = var.filter(like="_"+f"{pick_column}"+"_", axis=1)
-#     # ausgabe des Sensors
-#     print("Sie haben folgende Tabelle ausgewählt: \n", pickd_column_df)
-#     # folgende Schleife dient zum abspeichern des column namens für weitere Funktionen / falls eine bessere Möglichkeit gefunden wird den Namen abzuspeichern wird die Funktion ersetzt
-#     for i in pickd_column_df:
-#         x = i
-#         save_string = f"{x}"
-
-
-#############################################################################################################################################################################################
-#############################################################################################################################################################################################
-
-#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # speichert das erste und letzte Datum als DataFrame ab für die Funktion sartEnd_df()
 # first and last data from temp_time
 # speichert in folgenden DataFrame ersten und letzten eintrag ab
@@ -489,85 +390,6 @@ def statistic_funcion_dynamic(optionStat, merged_df, save_string):
         print(df)
         #return(df)
 
-#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-## Funktion: Datumsauswahl oder Datumbereich eines Sensors
-# choose_date() gibt zurück:
-# - ausgewählten Tag oder Bereich (als DataFrame)
-# choose_date() beinhaltet die Funktion commpare_date_input(compare_value) welche prüft automatisch prüft ob der eingebene Tag oder Bereich in dem in der Datenbank aufgenommenen Bereich liegt
-
-# def choose_date(utc_stamp):
-#     # deklarierend er globalen Variabeln
-#     global filtered_df_raw
-#     global filtered_df_date
-#     global input_day
-#     global final_flag
-#     global input_a
-#     global input_beginn
-#     global input_end
-#     # Funktion pick_DataFrame() wird vorher angesprochen
-   
-#     print("Sie können ein Datum oder einen Zeitraum innerhalb der oben genannten Grenzen wählen.")
-#     print("Geben Sie (1) für ein bestimmtes Datum ein. \n Geben Sie (2) für einen Zeitraum ein \n bestätigen Sie anschließend mit Enter ") 
-#     # ansprechen der Variabel input_a nötig
-#     input_a = int
-#     # solange 1 oder 2 nicht eingegeben wird, wird die eingabe wiederholt 
-#     while input_a != "1" or "2":
-        
-#         input_a = input()
-        
-#         # eingabe für ein bestimmten Tag ausgewählt
-#         if input_a == "1":
-#             # Ausgabe um einen bestimmten Tag auszuwählen
-#             print("Geben Sie jetzt das Datum ein \n Geben Sie in der folgenden Folgenden Reihenfolge ein \n Jahr-Monat-Tag und bestätigen Sie anschließend mit Enter")
-#             # erstelle den Merker für das prüfen ob das Datum in dem aufgenommenen Datenbereich liegt
-#             final_flag = False
-            
-#             while final_flag == False:
-#                     # eingeben des tages in der Folge: jahr-monat-tag
-#                     input_day = input()
-#                     # überprüfende Funktion ob der eingegeben tag in dem Datenberreich liegt
-#                     compare_value = input_day
-#                     # folgende Funktion setzt den final_flag=True falls der Tag in dem Bereich der aufgenommenen Daten liegt
-#                     # falls der tag nicht in dem Bereich der aufgenommenen Daten Liegt wird final_flag=Flase aus der Funktion zurückgegeben und eingabe soll wiederholt werden
-#                     commpare_date_input(compare_value)
-                    
-#             # verwenden die pandas .loc funktion mir einer abfrage im Datafr5ame der dann den Tag filtert   
-#             filtered_df_raw = utc_stamp.loc[(utc_stamp >= f"{input_day}"+" 00:00:00") & (utc_stamp <= f"{input_day}"+" 23:59:59")]
-#             # speichere den Tag in ein Dataframe
-#             filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
-#             # gebe das DataFrame zurück und verlasse die Funktion
-#             return filtered_df_date
-
-#         # eingabe für einen Bestimmten Bereich eingegeben
-#         if input_a == "2":
-#             # Ausgabe um den Bereich auszuwählen
-#             print("Geben Sie jetzt den Zeitraum ein \n Geben Sie in der folgenden Folgenden Reihenfolge ein \n Jahr-Monat-Tag und bestätigen Sie anschließend mit Enter")
-#             # erstelle den Merker für das prüfen ob das Datum in dem aufgenommenen Datenbereich liegt
-#             final_flag = False
-#             while final_flag == False:
-#                     input_beginn = input("Geben Sie den Beginn des Zeitraumes ein \n")
-#                     compare_value = input_beginn
-#                     commpare_date_input(compare_value)
-                    
-#             # final_flag muss zurückgesetzt werden da noch das einzuschließende Datum eingegeben werden muss
-#             final_flag = False
-            
-#             while final_flag == False:
-#                     input_end = input("Geben Sie das Ende des Zeitraumes ein \n")
-#                     compare_value = input_end
-#                     commpare_date_input(compare_value)
-                    
-#             # die eingabe wird übergeben
-#             filtered_df_raw = utc_stamp.loc[(utc_stamp >= f"{input_beginn}") & (utc_stamp <= f"{input_end}")]
-#             # gefilterter Berreich wird in einen neuen DataFrame abgespeichert
-#             filtered_df_date = pd.DataFrame({"longtime": filtered_df_raw})
-#             # abschleißend wird das DataFrame zurückgegeben und die Funktion verlassen
-#             return filtered_df_date
-        
-#         # falls die Eingabe nicht 1 oder 2 war    
-#         else:
-#             print("Die Eingabe ist unzulässig")
-#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 def choose_date_gui(saveFirstDate, saveLastDate):
     # deklarierend er globalen Variabeln
     global filtered_df_raw
