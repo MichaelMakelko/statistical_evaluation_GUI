@@ -10,6 +10,7 @@ from tkinter import ttk
 # importiere Module aus andere Dateien
 from preperation_data import temp_time, humi_time
 
+# Datensatz Fenster schließen
 def quit(x):
     x.destroy()
 
