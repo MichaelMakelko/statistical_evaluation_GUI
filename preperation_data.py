@@ -95,7 +95,7 @@ INFO:
 - _t: Transmit Zeitstempel (Wann hat das Gerät gesendet)
 - _r: Receive Zeitstempel (Wann wurde in Die Datenbank geschrieben)
 """
-#class group_data:
+
 # 1. Trennen aus dem DataFrame die Columns Temperatur und Luftfeuchtigkeit
 temp_all= df.filter(like="temperature", axis=1) # axis=1 means along "columns" / =0 along "rows"
 humi_all= df.filter(like="humidity", axis=1)
